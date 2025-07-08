@@ -9,20 +9,38 @@ export class MovieNight {
     }
 
     async tester() {
-        
-        let genres = ['thriller', 'scifi'];
 
-        const response = await this.client.showsApi.searchShowsByFilters({
+        const PAGES_TO_FETCH = 10;
+
+
+        const movies = this.client.showsApi.searchShowsByFiltersWithAutoPagination({
             country: "us",
-            catalogs: ["netflix", "hulu"],
-            genres: genres,
+            catalogs: ["netflix"],
+            genres: ["action"],
             showType: streamingAvailability.ShowType.Movie,
-        });
+        }, PAGES_TO_FETCH);
 
-        // let data = response.data.result;
-        // console.log("data", data);
-        console.log("response", response);
-        return response;
+        let i = 0;
+        for await (const movie of movies) {
+            console.log("movie.title", movie.title);
+            i++;
+        }
+
+        console.log("i", i);
+        
+        // let genres = ['thriller', 'scifi'];
+
+        // const response = await this.client.showsApi.searchShowsByFilters({
+        //     country: "us",
+        //     catalogs: ["netflix", "hulu"],
+        //     genres: genres,
+        //     showType: streamingAvailability.ShowType.Movie,
+        // });
+
+        // // let data = response.data.result;
+        // // console.log("data", data);
+        // console.log("response", response);
+        // return response;
     }
 }
 
