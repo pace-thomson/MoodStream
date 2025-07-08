@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^17.1.0",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
+    "openai": "^5.8.2",
     "streaming-availability": "^4.4.0"
   }
 }

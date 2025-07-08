@@ -10,23 +10,38 @@ export class MovieNight {
 
     async tester() {
 
-        const PAGES_TO_FETCH = 10;
-
-
-        const movies = this.client.showsApi.searchShowsByFiltersWithAutoPagination({
+        const movies = await this.client.showsApi.searchShowsByFilters({
             country: "us",
             catalogs: ["netflix"],
-            genres: ["action"],
             showType: streamingAvailability.ShowType.Movie,
-        }, PAGES_TO_FETCH);
+        });
 
-        let i = 0;
-        for await (const movie of movies) {
-            console.log("movie.title", movie.title);
-            i++;
-        }
+        console.log("movies", movies);
+        // let i = 0;
+        // for (const movie of movies) {
+        //     console.log("movie.title:", movie.title);
+        //     i++;
+        // }
 
-        console.log("i", i);
+        // console.log("i", i);
+        
+
+        // const PAGES_TO_FETCH = 20;
+
+
+        // const movies = this.client.showsApi.searchShowsByFiltersWithAutoPagination({
+        //     country: "us",
+        //     catalogs: ["netflix"],
+        //     showType: streamingAvailability.ShowType.Movie,
+        // }, PAGES_TO_FETCH);
+
+        // let i = 0;
+        // for await (const movie of movies) {
+        //     console.log("movie.title:", movie.title);
+        //     i++;
+        // }
+
+        // console.log("i", i);
         
         // let genres = ['thriller', 'scifi'];
 
