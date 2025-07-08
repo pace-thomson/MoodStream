@@ -3,7 +3,7 @@ import OpenAI from 'openai';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPEN_AI_API_KEY });
 
 const compressedPrompt = `
 Extract and return a JSON object with:
