@@ -3,8 +3,7 @@
 
 <template>
   <div class="container">
-    <p>Hello World!</p>
-    <p>Welcome to your Vue.js app!</p>
+    <p>moodstream</p>
   </div>
 </template>
 
