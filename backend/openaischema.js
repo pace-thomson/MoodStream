@@ -13,10 +13,10 @@ export const extractPreferenceTool = [{
         "items": {
           "type": "string",
           "enum": [
-            "Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary",
-            "Drama", "Family", "Fantasy", "History", "Horror", "Music", "Mystery",
-            "News", "Reality", "Romance", "Science Fiction", "Talk Show", "Thriller",
-            "War", "Western"
+            "action", "adventure", "animation", "comedy", "crime", "documentary",
+            "drama", "family", "fantasy", "history", "horror", "music", "mystery",
+            "news", "reality", "romance", "scifi", "talk", "thriller",
+            "war", "western"
           ]
         },
       },
