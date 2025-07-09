@@ -19,6 +19,22 @@
         Don't have an account?
         <button @click="navigateTo('register')">Register here</button>
       </p>
+
+<!-- DELETE ME IM FOR TESTING -->
+      <div>
+        <button @click="getUserInfoClicked(); console.log('clicked in thins');">Get User Info</button>
+        <p>
+          {{ userInfo.user_id }}
+        </p>
+        <p>
+          {{ userInfo.catalogs }}
+        </p>
+        <p>
+          {{ userInfo.genres }}
+        </p>
+      </div>
+
+
     </div>
 
     <!-- REGISTRATION VIEW -->
@@ -53,7 +69,9 @@
 
 <script setup>
 import { ref } from 'vue';
-import { supabase } from './supabase'; 
+import { supabaseAnonKey, supabaseUrl, getUserInfo } from './supabase'; 
+import { createClient } from '@supabase/supabase-js'
+
 
 // --- State Management ---
 const currentPage = ref('login'); // Can be 'login' or 'register'
@@ -63,6 +81,10 @@ const email = ref('');
 const password = ref('');
 const firstName = ref('');
 const lastName = ref('');
+
+const userInfo = ref({});
+
+const supabase = ref(createClient(supabaseUrl, supabaseAnonKey));
 
 // --- Navigation ---
 function navigateTo(page) {
@@ -74,11 +96,18 @@ function navigateTo(page) {
   currentPage.value = page;
 }
 
+async function getUserInfoClicked() {
+  console.log('clicked');
+  userInfo.value = await getUserInfo(supabase.value, '6cfbbf15-e66c-4e33-b2e5-f2db9c0cdae8');
+  console.log("userInfo", userInfo);
+  return;
+}
+
 // --- Form Handlers (with Supabase) ---
 
 async function handleLogin() {
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.value.auth.signInWithPassword({
       email: email.value,
       password: password.value,
     });
@@ -98,7 +127,7 @@ async function handleLogin() {
 async function handleRegister() {
   try {
     // Step 1: Sign up the user in the auth.users table
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    const { data: authData, error: authError } = await supabase.value.auth.signUp({
       email: email.value,
       password: password.value,
     });
@@ -107,7 +136,7 @@ async function handleRegister() {
     if (!authData.user) throw new Error("Registration failed, no user returned.");
 
     // Step 2: Insert the user's profile information into the public.profiles table
-    const { error: profileError } = await supabase
+    const { error: profileError } = await supabase.value
       .from('profiles')
       .insert({ 
         id: authData.user.id, // The user's ID from the auth table
