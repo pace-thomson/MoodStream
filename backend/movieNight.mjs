@@ -9,8 +9,6 @@ export class MovieNight {
 
     getMovies(aiResponse) {
         let jsoned = JSON.parse(aiResponse);
-
-
     }
 
     async tester(responseObj) {
@@ -23,19 +21,25 @@ export class MovieNight {
 
         let options;
 
-        if (responseObj.showType) {
+        if (responseObj.showType != "either") {
             options = {
                 country: "us",
                 catalogs: ["netflix"],
                 showType: responseObj.showType,
                 orderBy: "popularity_all_time"
             };
+        } else {
+            options = {
+                country: "us",
+                catalogs: ["netflix"],
+                orderBy: "popularity_all_time"
+            };
         }
 
         const idk = await this.client.showsApi.searchShowsByFilters();
 
-
-        console.log("movies", movies);
+        return idk;
+        // console.log("Movie night response:", idk);
         // let i = 0;
         // for (const movie of movies) {
         //     console.log("movie.title:", movie.title);

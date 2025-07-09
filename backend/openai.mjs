@@ -12,9 +12,11 @@ export class AiResponseObj {
     constructor(res) {
         this.mood = res.mood;
         this.genres = res.genres;
-        if (res.showType != "either") {
-            this.showType = res.showType;
-        } 
+        // if (res.showType != "either") {
+        this.showType = res.showType;
+        // } else {
+        //     this.showType = null;
+        // }
         this.minYear = res.minYear;
         this.maxYear = res.maxYear;        
     }
