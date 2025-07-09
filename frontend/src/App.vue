@@ -53,7 +53,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { supabase } from './supabase';
+import { supabase } from './supabase'; 
 
 // --- State Management ---
 const currentPage = ref('login'); // Can be 'login' or 'register'
@@ -74,38 +74,56 @@ function navigateTo(page) {
   currentPage.value = page;
 }
 
-
-
-// --- Form Handlers  ---
+// --- Form Handlers (with Supabase) ---
 
 async function handleLogin() {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: 'valid.email@supabase.io',
-    password: 'example-password',
-  })
-  console.log('Attempting to log in with:');
-  console.log('Email:', email.value);
-  console.log('Password:', password.value);
-  //alert(`Logging in with ${email.value}`);
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.value,
+      password: password.value,
+    });
+
+    if (error) throw error;
+    
+    alert('Login successful!');
+    console.log('Logged in user:', data.user);
+    // You can navigate to another page or update the UI here
+
+  } catch (error) {
+    alert(error.message);
+    console.error('Error logging in:', error);
+  }
 }
 
 async function handleRegister() {
-  const { data, error } = await supabase.auth.signUp({
-    email: email.value,
-    password: password.value,
-    // options: {
-    //   emailRedirectTo: 'https://example.com/welcome',
-    // },
-  })
-  // After a successful signup, you will also need to insert the
-  // first_name and last_name into your 'profiles' table.
-  console.log('Attempting to register with:');
-  console.log('First Name:', firstName.value);
-  console.log('Last Name:', lastName.value);
-  console.log('Email:', email.value);
-  console.log('Password:', password.value);
+  try {
+    // Step 1: Sign up the user in the auth.users table
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: email.value,
+      password: password.value,
+    });
 
-  //alert(`Registering ${firstName.value} ${lastName.value}`);
+    if (authError) throw authError;
+    if (!authData.user) throw new Error("Registration failed, no user returned.");
+
+    // Step 2: Insert the user's profile information into the public.profiles table
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .insert({ 
+        id: authData.user.id, // The user's ID from the auth table
+        first_name: firstName.value, 
+        last_name: lastName.value 
+      });
+
+    if (profileError) throw profileError;
+
+    alert('Registration successful! Please check your email for verification.');
+    console.log('Registered user:', authData.user);
+
+  } catch (error) {
+    alert(error.message);
+    console.error('Error during registration:', error);
+  }
 }
 </script>
 
@@ -126,6 +144,7 @@ button {
   margin-top: 1em;
 }
 </style>
+
 
 
 
