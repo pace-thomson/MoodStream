@@ -6,26 +6,10 @@ export class MovieNight {
         this.client = new streamingAvailability.Client(new streamingAvailability.Configuration({apiKey: RAPID_API_KEY}));
     }
 
-    async getShowsFromMOTN(responseObj) {
+    async getShowsFromMOTN(aiResponseObj, catalogs) {
         try {
-            let filter;
-    
-            if (responseObj.showType != "either") {
-                filter = ({
-                    country: "us",
-                    catalogs: ["netflix"],
-                    genres: responseObj.genres,
-                    showType: streamingAvailability.ShowType.Movie,
-                    orderBy: "popularity_alltime"
-                });
-            } else {
-                filter = ({
-                    country: "us",
-                    catalogs: ["netflix"],
-                    genres: responseObj.genres,
-                    orderBy: "popularity_alltime"
-                });
-            }
+            
+            let filter = this.getFilter(aiResponseObj, catalogs);
     
             const idk = await this.client.showsApi.searchShowsByFilters(filter);
     
@@ -34,7 +18,30 @@ export class MovieNight {
         catch (error) {
             console.log("error", error);
         }
+    }
 
+    getFilter(aiResponseObj, catalogs) {
+
+        const filter = {
+            country: "us",
+            catalogs: catalogs,
+            genres: aiResponseObj.genres,
+            orderBy: "popularity_alltime",
+        };
+
+        if (aiResponseObj.showType !== "either") {
+            filter.showType = aiResponseObj.showType;
+        }
+
+        if (aiResponseObj.minYear != 0) {
+            filter.minYear = aiResponseObj.minYear;
+        }
+
+        if (aiResponseObj.maxYear != 2100) {
+            filter.maxYear = aiResponseObj.maxYear;
+        }
+
+        return filter;
     }
 
     async getGenres() {
@@ -42,15 +49,16 @@ export class MovieNight {
         return idk;
     }
 
-    async tester(responseObj) {
+    
+    async tester(aiResponseObj) {
         try {
             let response;
     
-            if (responseObj.showType != "either") {
+            if (aiResponseObj.showType != "either") {
                 response = ({
                     country: "us",
                     catalogs: ["netflix"],
-                    genres: responseObj.genres,
+                    genres: aiResponseObj.genres,
                     genres_relation: "or",
                     showType: streamingAvailability.ShowType.Movie,
                     orderBy: "popularity_alltime"
@@ -59,7 +67,7 @@ export class MovieNight {
                 response = ({
                     country: "us",
                     catalogs: ["netflix"],
-                    genres: responseObj.genres,
+                    genres: aiResponseObj.genres,
                     orderBy: "popularity_alltime"
                 });
             }
@@ -84,50 +92,3 @@ export class MovieNight {
         }
     }
 }
-
-
-// const movies = await this.client.showsApi.searchShowsByFilters({
-//     country: "us",
-//     catalogs: ["netflix"],
-//     showType: streamingAvailability.ShowType.Movie,
-// });
-// console.log("Movie night response:", idk);
-// let i = 0;
-// for (const movie of movies) {
-//     console.log("movie.title:", movie.title);
-//     i++;
-// }
-
-// console.log("i", i);
-
-
-// const PAGES_TO_FETCH = 20;
-
-
-// const movies = this.client.showsApi.searchShowsByFiltersWithAutoPagination({
-//     country: "us",
-//     catalogs: ["netflix"],
-//     showType: streamingAvailability.ShowType.Movie,
-// }, PAGES_TO_FETCH);
-
-// let i = 0;
-// for await (const movie of movies) {
-//     console.log("movie.title:", movie.title);
-//     i++;
-// }
-
-// console.log("i", i);
-
-// let genres = ['thriller', 'scifi'];
-
-// const response = await this.client.showsApi.searchShowsByFilters({
-//     country: "us",
-//     catalogs: ["netflix", "hulu"],
-//     genres: genres,
-//     showType: streamingAvailability.ShowType.Movie,
-// });
-
-// // let data = response.data.result;
-// // console.log("data", data);
-// console.log("response", response);
-// return response;
