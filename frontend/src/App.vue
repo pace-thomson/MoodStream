@@ -2,7 +2,7 @@
 <template>
   
   <!-- Login/Register area -->
-  <div id="login-register">
+  <div v-if="currentPage === 'login' || currentPage === 'register'" id="login-register">
           
     <Login 
       v-if="currentPage === 'login'"
@@ -16,19 +16,24 @@
       :supabase="supabase"
     />
   </div>
+
+  <div v-else-if="currentPage == 'home'" id="main-page">
+    <Home v-model="currentPage" />
+  </div>
     
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { supabaseAnonKey, supabaseUrl, getUserInfo } from './supabase'; 
+import { supabaseAnonKey, supabaseUrl } from './supabase'; 
 import { createClient } from '@supabase/supabase-js';
 import Login  from './components/Login.vue';
 import Register from './components/Register.vue';
+import Home from './components/Home.vue';
 
 
 // --- State Management ---
-const currentPage = ref('login'); // Can be 'login' or 'register' (for now)
+let currentPage = ref('login'); // Can be 'login' or 'register' (for now)
 
 const supabase = ref(createClient(supabaseUrl, supabaseAnonKey));
 

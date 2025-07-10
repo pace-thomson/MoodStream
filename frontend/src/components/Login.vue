@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { SupabaseClient } from '@supabase/supabase-js';
 
-const currentPage = defineModel(); 
+let currentPage = defineModel(); 
 
 const props = defineProps({
   supabase: {
@@ -24,10 +24,9 @@ async function handleLogin() {
 
     if (error) throw error;
 
-    alert('Login successful!');
     console.log('Logged in user:', data.user);
-    // You can navigate to another page or update the UI here
-
+    currentPage.value = 'home';
+    
   } catch (error) {
     alert(error.message);
     console.error('Error logging in:', error);
@@ -39,7 +38,7 @@ async function handleLogin() {
   <div>
     <h1>Moodstream</h1>
     <h2>Login</h2>
-    <form @submit.prevent="handleLogin">
+    <form @submit.prevent>
       <div>
         <label for="email">Email:</label>
         <input type="email" id="email" v-model="email" required />
@@ -48,7 +47,7 @@ async function handleLogin() {
         <label for="password">Password:</label>
         <input type="password" id="password" v-model="password" required />
       </div>
-      <button type="submit">Login</button>
+      <button @click="handleLogin()" type="submit">Login</button>
     </form>
     <p>
       Don't have an account?

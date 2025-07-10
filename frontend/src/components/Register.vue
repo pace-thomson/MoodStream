@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { SupabaseClient } from '@supabase/supabase-js';
 
-const currentPage = defineModel();
+let currentPage = defineModel();
 
 const props = defineProps({
   supabase: {
