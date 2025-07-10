@@ -1,43 +1,36 @@
 <template>
   <div>
-    <!-- LOGIN VIEW -->
-    <div v-if="currentPage === 'login'">
-      <h1>Moodstream</h1>
-      <h2>Login</h2>
-      <form @submit.prevent="handleLogin">
-        <div>
-          <label for="email">Email:</label>
-          <input type="email" id="email" v-model="email" required />
-        </div>
-        <div>
-          <label for="password">Password:</label>
-          <input type="password" id="password" v-model="password" required />
-        </div>
-        <button type="submit">Login</button>
-      </form>
+    <!-- DELETE ME IM FOR TESTING 
+    <div>
+      <button @click="getUserInfoClicked(); console.log('clicked in thins');">Get User Info</button>
       <p>
-        Don't have an account?
-        <button @click="navigateTo('register')">Register here</button>
+        {{ userInfo.user_id }}
       </p>
-
-<!-- DELETE ME IM FOR TESTING -->
-      <div>
-        <button @click="getUserInfoClicked(); console.log('clicked in thins');">Get User Info</button>
-        <p>
-          {{ userInfo.user_id }}
-        </p>
-        <p>
-          {{ userInfo.catalogs }}
-        </p>
-        <p>
-          {{ userInfo.genres }}
+      <p>
+        {{ userInfo.catalogs }}
+      </p>
+      <p>
+        {{ userInfo.genres }}
         </p>
       </div>
-
-
-    </div>
-
+    -->
+    
+    
+    
     <!-- REGISTRATION VIEW -->
+    
+    <!-- LOGIN VIEW -->
+    <Login 
+      v-if="currentPage === 'login'" 
+    />
+
+    <!-- <Color 
+      :red="colo.red"
+      :green="colo.green"
+      :blue="colo.blue"
+    /> -->
+
+      
     <div v-else>
       <h1>Create Account</h1>
       <form @submit.prevent="handleRegister">
@@ -70,15 +63,15 @@
 <script setup>
 import { ref } from 'vue';
 import { supabaseAnonKey, supabaseUrl, getUserInfo } from './supabase'; 
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
+import Login  from './components/Login.vue';
 
 
 // --- State Management ---
 const currentPage = ref('login'); // Can be 'login' or 'register'
 
 // --- Form Input Models ---
-const email = ref('');
-const password = ref('');
+
 const firstName = ref('');
 const lastName = ref('');
 
