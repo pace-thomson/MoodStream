@@ -55,9 +55,9 @@ export async function getUserWatchlist(supabaseClient, user_id) {
     }
   
     return data;
-  }
+}
   
-  export async function getUserMoodHistory(supabaseClient, user_id) {
+export async function getUserMoodHistory(supabaseClient, user_id) {
     const { data, error } = await supabaseClient
       .from('user_history')
       .select('id, mood, transcript, created_at')
@@ -70,12 +70,12 @@ export async function getUserWatchlist(supabaseClient, user_id) {
     }
   
     return data;
-  }
+}
 
-  export async function logout(supabaseClient) {
+export async function logout(supabaseClient) {
     const { error } = await supabaseClient.auth.signOut();
     if (error) {
       console.error('Logout failed:', error.message);
     }
-  }
+}
   

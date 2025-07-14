@@ -38,9 +38,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseUrl, supabaseAnonKey, getUserInfo, logout } from './supabase.js';
+import { getShowsWithPrompt } from './serverCaller.js'
 
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
@@ -59,6 +60,14 @@ const userWatchlist = ref([]);
 const userMoodHistory = ref([]);//this array has the imdb id of the movie or show(and all its details), but we can change this if one of the other ids is better, but imdb is the universal one that can link to both movie of the night or tmdb if needed.
 
 const supabase = ref(createClient(supabaseUrl, supabaseAnonKey));
+
+
+
+watch(currentPage, async (newPage, oldPage) => {
+  console.log('current page changed');
+  const showss = await getShowsWithPrompt("I'm in the mood for something scary from the 80's");
+  console.log("showss:", showss);
+});
 
 // --- Functions ---
 async function loadUserData(user) {
