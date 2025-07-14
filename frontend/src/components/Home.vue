@@ -28,13 +28,10 @@
 <script setup>
 import { ref } from 'vue';
 
-const moodTranscript = ref('');
 
 let currentPage = defineModel();
 
 console.log('current page', currentPage);
-
-//selectEmoji(emoji) for selecting an emoji
 
 
 const emojis = ref([
@@ -44,6 +41,27 @@ const emojis = ref([
   { name: 'love', fileName: 'love.png' },
   { name: 'neutral', fileName: 'neutral.png' }
 ]);
+
+const emojiGenres = {
+  happy: ['comedy', 'animation', 'family'],
+  sad: ['drama', 'crime', 'reality', 'horror'],
+  tired: ['documentary', 'history', 'family'],
+  love: ['romance'],
+  neutral: ['action', 'adventure', 'fantasy', 'mystery', 'thriller', 'science fiction', 'comedy']
+};
+
+const mood = ref([]);
+const autoPrompt = ref([]);
+const moodTranscript = ref('');
+console.log('moodTranscript', moodTranscript);
+
+
+function selectEmoji(emoji) {
+  mood.value.push(emoji.name);
+  autoPrompt.value.push(emojiGenres[emoji.name]);
+  console.log('Mood selected:', mood.value);
+  console.log('Auto prompt:', autoPrompt.value);
+}
 
 function getImageUrl(fileName) {
   return new URL(`../assets/images/${fileName}`, import.meta.url).href;
