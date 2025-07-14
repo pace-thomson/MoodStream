@@ -11,8 +11,15 @@ const openAiHandler = new OpenAiHandler(process.env.OPEN_AI_API_KEY);
 const availabilityApiHandler = new MovieNight(process.env.RAPID_API_KEY);
 
 
-async function getShowsWithPrompt() {
+async function getShowsWithPrompt(data) {
+    let aiResponse = await openAiHandler.getPreferencesFromTranscript(data.prompt);
+    const showList = await availabilityApiHandler.getShowsUsingPrompt(aiResponse, data.catalogs);
+    return showList;
+}
 
+async function getShowsWithGenres(data) {
+    const showList = await availabilityApiHandler.getShowsUsingGenres(data.genres, data.catalogs);
+    return showList;
 }
 
 
@@ -22,17 +29,21 @@ app.get('/alive', (req, res) => {
 
 app.post('/recommend', express.json(), async (req, res) => {
 
-    console.log('req', req.body);
-    
     const data = req.body;
+    console.log('data', data);
+
+    console.log("data.catalogs", data.catalogs);
+
+    let showsList;
+    if (data.prompt) {
+        showsList = await getShowsWithPrompt(data);
+    } else if (data.genres) {
+        showsList = await getShowsWithGenres(data);
+    }
+
+    console.log(showsList);
     
-    let aiResponse = await openAiHandler.getPreferencesFromTranscript(data.prompt);
-
-    const showList = await availabilityApiHandler.getShowsFromMOTN(aiResponse, data.catalogs);
-
-    // console.log("availabilityApiHandler res", showList);
-
-    res.status(200).json(showList);
+    res.status(200).json(showsList);
 });
 
 app.listen(PORT, () => {

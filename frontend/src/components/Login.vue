@@ -55,7 +55,7 @@ async function handleLogin() {
       <div class="switch-form">
         <p>
           Don't have an account?
-          <button @click="currentPage = 'register'"class="switch-form-link">Register here</button>
+          <button @click="currentPage = 'register'" class="switch-form-link">Register here</button>
         </p>
       </div>
     </div>

@@ -41,7 +41,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseUrl, supabaseAnonKey, getUserInfo, logout } from './supabase.js';
-import { getShowsWithPrompt } from './serverCaller.js'
+import { getShowsWithPrompt, getShowsWithGenres } from './serverCaller.js'
 
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
@@ -62,11 +62,16 @@ const userMoodHistory = ref([]);//this array has the imdb id of the movie or sho
 const supabase = ref(createClient(supabaseUrl, supabaseAnonKey));
 
 
+// console.log('current page changed');
+// const catalogs = ['netflix', 'disney', 'prime'];
+// const prompt = "I'm in the mood for something scary from the 80's";
+// const genres = [ 'horror', 'thriller' ];
+// // const showss = await getShowsWithPrompt(prompt, catalogs);
+// const showss = await getShowsWithGenres( genres, catalogs)
+// console.log("showss:", showss);
 
 watch(currentPage, async (newPage, oldPage) => {
-  console.log('current page changed');
-  const showss = await getShowsWithPrompt("I'm in the mood for something scary from the 80's");
-  console.log("showss:", showss);
+
 });
 
 // --- Functions ---

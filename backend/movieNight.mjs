@@ -6,10 +6,12 @@ export class MovieNight {
         this.client = new streamingAvailability.Client(new streamingAvailability.Configuration({apiKey: RAPID_API_KEY}));
     }
 
-    async getShowsFromMOTN(aiResponseObj, catalogs) {
+    async getShowsUsingPrompt(aiResponseObj, catalogs) {
         try {
             
             let filter = this.getFilter(aiResponseObj, catalogs);
+
+            console.log('filter', filter);
     
             const idk = await this.client.showsApi.searchShowsByFilters(filter);
     
@@ -19,6 +21,26 @@ export class MovieNight {
             console.log("error", error);
         }
     }
+
+    async getShowsUsingGenres(genres, catalogs) {
+        try {
+            let filter = {
+                country: "us",
+                catalogs: catalogs,
+                genres: genres,
+                orderBy: "popularity_alltime",
+            };
+    
+            const idk = await this.client.showsApi.searchShowsByFilters(filter);
+    
+            return idk;
+        }
+        catch (error) {
+            console.log("error", error);
+        }
+    }
+
+
 
     getFilter(aiResponseObj, catalogs) {
 
@@ -34,11 +56,11 @@ export class MovieNight {
         }
 
         if (aiResponseObj.minYear != 0) {
-            filter.minYear = aiResponseObj.minYear;
+            filter.yearMin = aiResponseObj.minYear;
         }
 
         if (aiResponseObj.maxYear != 2100) {
-            filter.maxYear = aiResponseObj.maxYear;
+            filter.yearMax = aiResponseObj.maxYear;
         }
 
         return filter;

@@ -15,7 +15,7 @@
         </span>
       </div>
       <div class="submit-button">
-        <button @click="getRecommenddations">Get Recommendations</button>
+        <button @click="getRecommendations">Get Recommendations</button>
       </div>
 
 
@@ -27,7 +27,8 @@
 
 <script setup>
 import { ref } from 'vue';
-
+import { getShowsWithGenres, getShowsWithPrompt } from '../serverCaller.js'
+ 
 
 let currentPage = defineModel();
 
@@ -65,6 +66,11 @@ function selectEmoji(emoji) {
 
 function getImageUrl(fileName) {
   return new URL(`../assets/images/${fileName}`, import.meta.url).href;
+}
+
+async function getRecommendations() {
+  const showss = await getShowsWithPrompt(moodTranscript.value, ['netflix', 'disney', 'prime']);
+  console.log(showss);
 }
 </script>
 
