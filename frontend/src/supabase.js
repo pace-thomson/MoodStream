@@ -41,3 +41,41 @@ export async function getUserInfo(supabaseClient, user_id) {
 
     return userInfo;
 }
+
+export async function getUserWatchlist(supabaseClient, user_id) {
+    const { data, error } = await supabaseClient
+      .from('user_watchlist')
+      .select('id_imdb, title, year, poster, created_at, description, genres')
+      .eq('user_id', user_id)
+      .order('created_at', { ascending: false });
+  
+    if (error) {
+      console.error('Watchlist fetch error:', error.message);
+      return [];
+    }
+  
+    return data;
+  }
+  
+  export async function getUserMoodHistory(supabaseClient, user_id) {
+    const { data, error } = await supabaseClient
+      .from('user_history')
+      .select('id, mood, transcript, created_at')
+      .eq('user_id', user_id)
+      .order('created_at', { ascending: false });
+  
+    if (error) {
+      console.error('Mood history fetch error:', error.message);
+      return [];
+    }
+  
+    return data;
+  }
+
+  export async function logout(supabaseClient) {
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) {
+      console.error('Logout failed:', error.message);
+    }
+  }
+  
