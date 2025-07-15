@@ -73,4 +73,25 @@ export async function logout(supabaseClient) {
       console.error('Logout failed:', error.message);
     }
 }
+
+export async function saveUserCatalogs(userId, selectedCatalogs) {
+    if (!userId || !Array.isArray(selectedCatalogs)) {
+      throw new Error('Invalid userId or selectedCatalogs');
+    }
+  
+    const inserts = selectedCatalogs.map(service => ({
+      user_id: userId,
+      service
+    }));
+  
+    const { data, error } = await supabase
+      .from('user_catalogs')
+      .insert(inserts);
+  
+    if (error) {
+      console.error('Insert error:', error);
+    }
+  
+    return { data, error };
+  }
   
