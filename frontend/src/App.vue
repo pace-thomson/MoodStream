@@ -20,13 +20,15 @@
           
     <Login 
       v-if="currentPage === 'login'"
-      v-model="currentPage"  
+      v-model:current-page="currentPage"  
+      v-model:current-user-id="currentUserId"
       :supabase="supabase"
     />
     
     <Register 
       v-else-if="currentPage === 'register'"
-      v-model="currentPage"  
+      v-model:current-page="currentPage"  
+      v-model:current-user-id="currentUserId"  
       :supabase="supabase"
     />
   </div>
@@ -38,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseUrl, supabaseAnonKey, getUserInfo, logout } from './supabase.js';
 import { getShowsWithPrompt, getShowsWithGenres } from './serverCaller.js'
@@ -50,10 +52,10 @@ import Home from './components/Home.vue';
 
 
 // --- State Management ---
-let currentPage = ref('login'); // Default to 'login' page
+let currentPage = ref(''); // Default to 'login' page
 
 // -- Ref variables --
-const currentUser = ref(null);
+const currentUserId = ref(null);
 const userCatalogs = ref([]);
 const userGenres = ref([]);
 const userWatchlist = ref([]);
@@ -61,34 +63,43 @@ const userMoodHistory = ref([]);//this array has the imdb id of the movie or sho
 
 const supabase = ref(createClient(supabaseUrl, supabaseAnonKey));
 
+onMounted(async () => {
+  const { data: { session } } = await supabase.value.auth.getSession();
 
-// console.log('current page changed');
-// const catalogs = ['netflix', 'disney', 'prime'];
-// const prompt = "I'm in the mood for something scary from the 80's";
-// const genres = [ 'horror', 'thriller' ];
-// // const showss = await getShowsWithPrompt(prompt, catalogs);
-// const showss = await getShowsWithGenres( genres, catalogs)
-// console.log("showss:", showss);
+  if (session) {
+    console.log('Current user:', session.user);
+    currentPage.value = 'home';
+    currentUserId.value = session.user.id;
+
+    // console.log('Access token:', session.access_token);
+  } else {
+    console.log('No active session.');
+    currentPage.value = 'login';
+  }
+})
 
 watch(currentPage, async (newPage, oldPage) => {
-
+  if (newPage == 'home' && (oldPage == 'register' || oldPage == 'login')) {
+    [userCatalogs.value, userGenres.value] = await getUserInfo(supabase.value, currentUserId.value);
+    console.log('currentuserstuff:', currentUserId.value, userCatalogs.value, userGenres.value);
+  }
 });
 
 // --- Functions ---
-async function loadUserData(user) {
-  try {
-    currentUser.value = user;
+// async function loadUserData(user) {
+//   try {
+//     currentUser.value = user;
 
-    const info = await getUserInfo(supabase.value, user.id);
-    userCatalogs.value = info.catalogs;
-    userGenres.value = info.genres;
+//     const info = await getUserInfo(supabase.value, user.id);
+//     userCatalogs.value = info.catalogs;
+//     userGenres.value = info.genres;
 
-    currentPage.value = 'home';
-  } catch (err) {
-    console.error('Error loading user data:', err.message);
-    alert('Failed to load user data.');
-  }
-};
+//     currentPage.value = 'home';
+//   } catch (err) {
+//     console.error('Error loading user data:', err.message);
+//     alert('Failed to load user data.');
+//   }
+// };
 
 async function handleLogout() {
   try {
@@ -97,7 +108,7 @@ async function handleLogout() {
     console.error('Logout failed:', err.message);
     alert('Logout failed. Please try again.');
   } finally {
-    currentUser.value = null;
+    currentUserId.value = null;
     userCatalogs.value = [];
     userGenres.value = [];
     currentPage.value = 'login';

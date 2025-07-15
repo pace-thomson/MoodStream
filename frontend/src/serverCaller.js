@@ -1,4 +1,9 @@
-const serverUrl = "http://localhost:3000";
+let serverUrl;
+if (window.location.hostname == "127.0.0.1") {
+    serverUrl = "http://localhost:3000";
+} else {
+    serverUrl = "https://MoodStream.onrender.com"
+}
 
 export async function getShowsWithPrompt(prompt, catalogs) {
     const options = {

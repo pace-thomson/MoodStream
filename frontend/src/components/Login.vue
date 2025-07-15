@@ -2,7 +2,9 @@
 import { ref } from 'vue';
 import { SupabaseClient } from '@supabase/supabase-js';
 
-let currentPage = defineModel(); 
+let currentPage = defineModel("current-page"); 
+let currentUserId = defineModel("current-user-id"); 
+
 
 const props = defineProps({
   supabase: {
@@ -25,6 +27,7 @@ async function handleLogin() {
     if (error) throw error;
 
     console.log('Logged in user:', data.user);
+    currentUserId.value = data.user.id;
     currentPage.value = 'home';
     
   } catch (error) {

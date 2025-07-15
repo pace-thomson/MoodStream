@@ -4,11 +4,8 @@ export const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ
 
 export async function getUserInfo(supabaseClient, user_id) {
 
-    let userInfo = {
-        user_id: user_id,
-        catalogs: [],
-        genres: []
-    }
+    let catalogs = [];
+    let genres = [];
 
     let { data: catalogData, error: error } = await supabaseClient
         .from('user_catalogs')
@@ -20,7 +17,7 @@ export async function getUserInfo(supabaseClient, user_id) {
     }
 
     catalogData.forEach(element => {
-        userInfo.catalogs.push(element["service"]);
+        catalogs.push(element["service"]);
     });
 
 
@@ -34,12 +31,10 @@ export async function getUserInfo(supabaseClient, user_id) {
     }
 
     genreData.forEach(element => {
-        userInfo.genres.push(element["genre"]);
+        genres.push(element["genre"]);
     });
 
-    console.log("userinfo", userInfo);
-
-    return userInfo;
+    return [catalogs, genres];
 }
 
 export async function getUserWatchlist(supabaseClient, user_id) {

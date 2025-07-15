@@ -13,9 +13,7 @@ export class MovieNight {
 
             console.log('filter', filter);
     
-            const idk = await this.client.showsApi.searchShowsByFilters(filter);
-    
-            return idk;
+            return await this.client.showsApi.searchShowsByFilters(filter);
         }
         catch (error) {
             console.log("error", error);
@@ -31,9 +29,7 @@ export class MovieNight {
                 orderBy: "popularity_alltime",
             };
     
-            const idk = await this.client.showsApi.searchShowsByFilters(filter);
-    
-            return idk;
+            return await this.client.showsApi.searchShowsByFilters(filter);
         }
         catch (error) {
             console.log("error", error);
@@ -94,20 +90,7 @@ export class MovieNight {
                 });
             }
             
-
-            // let idk = await this.client.showsApi.searchShowsByFilters(({
-            //     country: "us",
-            //     catalogs: ["netflix"],
-            //     genres: ["action"],
-            //     showType: streamingAvailability.ShowType.Movie,
-            //     orderBy: "popularity_1year",
-            // }));
-
-    
-            const idk = await this.client.showsApi.searchShowsByFilters(response);
-
-    
-            return idk;
+            return await this.client.showsApi.searchShowsByFilters(response);
         }
         catch (error) {
             console.log("error", error);

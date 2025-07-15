@@ -2,7 +2,9 @@
 import { ref } from 'vue';
 import { SupabaseClient } from '@supabase/supabase-js';
 
-let currentPage = defineModel();
+let currentPage = defineModel("current-page"); 
+let currentUserId = defineModel("current-user-id"); 
+
 
 const props = defineProps({
   supabase: {
@@ -40,6 +42,7 @@ async function handleRegister() {
 
     alert('Registration successful! Please check your email for verification.');
     console.log('Registered user:', authData.user);
+    currentUserId.value = authData.user.id;
 
   } catch (error) {
     alert(error.message);
