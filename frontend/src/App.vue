@@ -45,9 +45,9 @@ import { createClient } from '@supabase/supabase-js';
 import { supabaseUrl, supabaseAnonKey, getUserInfo, logout } from './supabase.js';
 import { getShowsWithPrompt, getShowsWithGenres } from './serverCaller.js'
 
-import Login from './components/Login.vue';
-import Register from './components/Register.vue';
-import Home from './components/Home.vue';
+import Login from './pages/Login.vue';
+import Register from './pages/Register.vue';
+import Home from './pages/Home.vue';
 
 
 
