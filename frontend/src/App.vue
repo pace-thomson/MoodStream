@@ -86,20 +86,6 @@ watch(currentPage, async (newPage, oldPage) => {
 });
 
 // --- Functions ---
-// async function loadUserData(user) {
-//   try {
-//     currentUser.value = user;
-
-//     const info = await getUserInfo(supabase.value, user.id);
-//     userCatalogs.value = info.catalogs;
-//     userGenres.value = info.genres;
-
-//     currentPage.value = 'home';
-//   } catch (err) {
-//     console.error('Error loading user data:', err.message);
-//     alert('Failed to load user data.');
-//   }
-// };
 
 async function handleLogout() {
   try {

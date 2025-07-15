@@ -7,11 +7,24 @@
     <div class="home-mood-container">
       <h2>How are you feeling?</h2>
       <div class="input-container">
-        <input type="text" v-model="moodTranscript" placeholder="I'm feeling..." />
+        <input 
+          :class="{'disabled-input': emojisOrPrompt == 'emojis' }"
+          type="text" v-model="moodTranscript" placeholder="I'm feeling..." 
+        />
       </div>
       <div class="emoji-container">
-        <span class="emoji" v-for="emoji in emojis" :key="emoji" @click="selectEmoji(emoji)">
-          <img :src="getImageUrl(emoji.fileName)" :alt="emoji.name" />
+        <span 
+          :class="{
+            'disabled-emoji': emojisOrPrompt == 'prompt', 
+            'emoji':  emojisOrPrompt != 'prompt',
+            'emoji-selected': mood.includes(emoji.name)
+          }"
+          v-for="emoji in emojis" :key="emoji" @click="selectEmoji(emoji)"
+        >
+          <img 
+            :src="getImageUrl(emoji.fileName)" :alt="emoji.name" 
+            
+          />
         </span>
       </div>
       <div class="submit-button">
@@ -26,14 +39,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { getShowsWithGenres, getShowsWithPrompt } from '../serverCaller.js'
  
 
-let currentPage = defineModel();
-
-console.log('current page', currentPage);
-
+const currentPage = defineModel();
+const emojisOrPrompt = ref('either');
+const mood = ref([]);
+const autoPrompt = ref([]);
+const moodTranscript = ref('');
 
 const emojis = ref([
   { name: 'happy', fileName: 'happy.png' },
@@ -51,17 +65,39 @@ const emojiGenres = {
   neutral: ['action', 'adventure', 'fantasy', 'mystery', 'thriller', 'science fiction', 'comedy']
 };
 
-const mood = ref([]);
-const autoPrompt = ref([]);
-const moodTranscript = ref('');
-console.log('moodTranscript', moodTranscript);
+
+watch(moodTranscript, (newTranscript, oldTranscript) => {
+  if (newTranscript != '') {
+    emojisOrPrompt.value = 'prompt'
+    console.log('new emojisOrPrompt: prompt');
+  } else {
+    emojisOrPrompt.value = 'either'
+  }
+})
+
+watch(autoPrompt, (newOne, oldOne) => {
+  if (newOne != []) {
+    emojisOrPrompt.value = 'emojis'
+    console.log('new emojisOrPrompt: emojis');
+  }
+})
+
 
 
 function selectEmoji(emoji) {
-  mood.value.push(emoji.name);
-  autoPrompt.value.push(emojiGenres[emoji.name]);
-  console.log('Mood selected:', mood.value);
-  console.log('Auto prompt:', autoPrompt.value);
+  if (emojisOrPrompt.value == 'prompt') {
+    console.log('invalid click');
+    return;
+  } else if (mood.value.includes(emoji.name)) {
+    mood.value = mood.value.filter(item => item !== emoji.name);
+    console.log('mood', mood.value);
+    return;
+  } else {
+    mood.value.push(emoji.name);
+    autoPrompt.value.push(emojiGenres[emoji.name]);
+    console.log('Mood selected:', mood.value);
+    // console.log('Auto prompt:', autoPrompt.value);
+  }
 }
 
 function getImageUrl(fileName) {
@@ -104,6 +140,12 @@ async function getRecommendations() {
   margin-top: 0.5rem;
 }
 
+
+
+.disabled-emoji:hover {
+  transform: none;
+}
+
 /* --- Mood Selection Area --- */
 .home-mood-container {
   max-width: 800px;
@@ -133,6 +175,11 @@ async function getRecommendations() {
     border-color: #42b983;
 }
 
+.disabled-input {
+  pointer-events: none;
+}
+
+
 .emoji-container {
     margin-top: 2rem;
     display: flex;
@@ -147,8 +194,19 @@ async function getRecommendations() {
   transition: transform 0.2s ease-in-out;
 }
 
-.emoji img:hover {
-    transform: scale(1.2);
+.emoji-selected {
+  transform: scale(1.2);
+  transition: transform 0.15s ease-in-out;
+}
+
+.disabled-emoji img {
+  filter: grayscale(80%);
+  transition: none;
+  height: 60px;
+}
+
+.disabled-emoji img:hover {
+  transform: none;
 }
 
 .submit-button {
