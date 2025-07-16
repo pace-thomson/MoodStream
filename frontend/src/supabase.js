@@ -74,22 +74,22 @@ export async function logout(supabaseClient) {
     }
 }
 
-export async function saveInitialPreferences(userId, selectedCatalogs, selectedGenres) {
+export async function saveInitialPreferences(userId, selectedCatalogs, selectedGenres, supabaseClient) {
     // Save catalogs
     const catalogInserts = selectedCatalogs.map(service => ({ user_id: userId, service }));
-    const { error: catalogError } = await supabase.from('user_catalogs').insert(catalogInserts);
+    const { error: catalogError } = await supabaseClient.from('user_catalogs').insert(catalogInserts);
     if (catalogError) throw catalogError;
   
     // Save genres
     const genreInserts = selectedGenres.map(genre => ({ user_id: userId, genre }));
-    const { error: genreError } = await supabase.from('user_genres').insert(genreInserts);
+    const { error: genreError } = await supabaseClient.from('user_genres').insert(genreInserts);
     if (genreError) throw genreError;
   }
 
-  export async function updateUserPreferences(userId, selectedCatalogs, selectedGenres) {
+  export async function updateUserPreferences(userId, selectedCatalogs, selectedGenres, supabaseClient) {
     // --- Update Catalogs ---
     // Step 1: Delete all existing catalog entries for this user.
-    const { error: deleteCatalogError } = await supabase
+    const { error: deleteCatalogError } = await supabaseClient
       .from('user_catalogs')
       .delete()
       .eq('user_id', userId);
@@ -99,13 +99,13 @@ export async function saveInitialPreferences(userId, selectedCatalogs, selectedG
     // Step 2: Insert the new set of catalog preferences.
     if (selectedCatalogs.length > 0) {
       const catalogInserts = selectedCatalogs.map(service => ({ user_id: userId, service }));
-      const { error: insertCatalogError } = await supabase.from('user_catalogs').insert(catalogInserts);
+      const { error: insertCatalogError } = await supabaseClient.from('user_catalogs').insert(catalogInserts);
       if (insertCatalogError) throw insertCatalogError;
     }
   
     // --- Update Genres ---
     // Step 3: Delete all existing genre entries for this user.
-    const { error: deleteGenreError } = await supabase
+    const { error: deleteGenreError } = await supabaseClient
       .from('user_genres')
       .delete()
       .eq('user_id', userId);
@@ -115,7 +115,7 @@ export async function saveInitialPreferences(userId, selectedCatalogs, selectedG
     // Step 4: Insert the new set of genre preferences.
     if (selectedGenres.length > 0) {
       const genreInserts = selectedGenres.map(genre => ({ user_id: userId, genre }));
-      const { error: insertGenreError } = await supabase.from('user_genres').insert(genreInserts);
+      const { error: insertGenreError } = await supabaseClient.from('user_genres').insert(genreInserts);
       if (insertGenreError) throw insertGenreError;
     }
   }

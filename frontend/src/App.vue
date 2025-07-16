@@ -34,7 +34,11 @@
   </div>
 
   <div v-else-if="currentPage == 'home'" id="main-page">
-    <Home v-model="currentPage" />
+    <Home 
+      v-model="currentPage"
+      :current-user-id="currentUserId"
+      :supabase="supabase"
+    />
   </div>
     
 </template>
@@ -59,12 +63,13 @@ const currentUserId = ref(null);
 const userCatalogs = ref([]);
 const userGenres = ref([]);
 const userWatchlist = ref([]);
-const userMoodHistory = ref([]);//this array has the imdb id of the movie or show(and all its details), but we can change this if one of the other ids is better, but imdb is the universal one that can link to both movie of the night or tmdb if needed.
+const userMoodHistory = ref([]); //this array has the imdb id of the movie or show(and all its details), but we can change this if one of the other ids is better, but imdb is the universal one that can link to both movie of the night or tmdb if needed.
 
 const supabase = ref(createClient(supabaseUrl, supabaseAnonKey));
 
 onMounted(async () => {
   const { data: { session } } = await supabase.value.auth.getSession();
+
 
   if (session) {
     console.log('Current user:', session.user);

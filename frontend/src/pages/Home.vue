@@ -33,12 +33,22 @@
     </div>
   </section>
 
+  <AccountPreferences 
+    :current-user-id="currentUserId"
+    :current-page="currentPage"
+    :supabase="props.supabase"
+  
+  />
+
 
 </template>
 
 <script setup>
 import { ref, watch } from 'vue';
 import { getShowsWithGenres, getShowsWithPrompt } from '../serverCaller.js'
+import AccountPreferences from '@/components/AccountPreferences.vue';
+import { SupabaseClient } from '@supabase/supabase-js';
+
  
 
 const currentPage = defineModel();
@@ -46,6 +56,15 @@ const emojisOrPrompt = ref('either');
 const mood = ref([]);
 const autoPrompt = ref([]);
 const moodTranscript = ref('');
+
+const props = defineProps({
+  supabase: {
+    type: SupabaseClient
+  },
+  currentUserId: {
+    type: String,
+  }
+});
 
 const emojis = ref([
   { name: 'happy', fileName: 'happy.png' },
