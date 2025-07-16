@@ -52,34 +52,34 @@
   const lastName = ref('');
   
   // When the component loads, fetch the user's current name to pre-fill the form
-  onMounted(async () => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('first_name, last_name')
-        .eq('id', props.currentUser.id)
-        .single(); // .single() is used to get just one record
+//   onMounted(async () => {
+//     try {
+//       const { data, error } = await supabase
+//         .from('profiles')
+//         .select('first_name, last_name')
+//         .eq('id', props.currentUser.id)
+//         .single(); // .single() is used to get just one record
   
-      if (error) throw error;
+//       if (error) throw error;
   
-      if (data) {
-        firstName.value = data.first_name;
-        lastName.value = data.last_name;
-      }
-    } catch (error) {
-      console.error('Error fetching profile name:', error.message);
-    }
-  });
+//       if (data) {
+//         firstName.value = data.first_name;
+//         lastName.value = data.last_name;
+//       }
+//     } catch (error) {
+//       console.error('Error fetching profile name:', error.message);
+//     }
+//   });
   
-  async function handleNameUpdate() {
-    try {
-      await updateUserName(props.currentUser.id, firstName.value, lastName.value);
-      alert('Your name has been updated successfully!');
-    } catch (error) {
-      console.error('Error updating name:', error.message);
-      alert('Failed to update your name.');
-    }
-  }
+//   async function handleNameUpdate() {
+//     try {
+//       await updateUserName(props.currentUser.id, firstName.value, lastName.value);
+//       alert('Your name has been updated successfully!');
+//     } catch (error) {
+//       console.error('Error updating name:', error.message);
+//       alert('Failed to update your name.');
+//     }
+//   }
   </script>
   
   <style scoped>
