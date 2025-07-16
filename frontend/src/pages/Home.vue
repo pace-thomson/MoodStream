@@ -33,12 +33,12 @@
     </div>
   </section>
 
-  <AccountPreferences 
+  <!-- <AccountPreferences 
     :current-user-id="currentUserId"
     :current-page="currentPage"
     :supabase="props.supabase"
   
-  />
+  /> -->
 
 
 </template>

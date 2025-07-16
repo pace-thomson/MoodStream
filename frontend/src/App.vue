@@ -2,14 +2,18 @@
   <!-- Nav Bar -->
   <nav class="navbar" v-if="currentPage !== 'login' && currentPage !== 'register'">
     <div class="navbar-left">
-      <span class="brand">moodstream</span>
+      <a href="/">
+        <span class="brand">
+          moodstream
+        </span>
+      </a>
     </div>
     <div class="navbar-center">
       <button class="nav-button">My Moods</button>
       <button class="nav-button">My Watchlist</button>
     </div>
     <div class="navbar-right">
-      <button class="nav-button account-button">Account</button>
+      <button @click="currentPage = 'account'" class="nav-button account-button">Account</button>
       <button class="nav-button logout-button" @click="handleLogout">Logout</button>
 
     </div>
@@ -33,12 +37,21 @@
     />
   </div>
 
-  <div v-else-if="currentPage == 'home'" id="main-page">
+  <div v-else id="main-page">
     <Home 
+      v-if="currentPage == 'home'"
       v-model="currentPage"
       :current-user-id="currentUserId"
       :supabase="supabase"
     />
+
+    <Account 
+      v-if="currentPage == 'account'"
+      :currentPage="currentPage"
+      :currentUserId="currentUserId"
+      :supabase="supabase"
+    />
+
   </div>
     
 </template>
@@ -52,6 +65,7 @@ import { getShowsWithPrompt, getShowsWithGenres } from './serverCaller.js'
 import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
 import Home from './pages/Home.vue';
+import Account from './pages/Account.vue';
 
 
 
@@ -90,6 +104,10 @@ watch(currentPage, async (newPage, oldPage) => {
   }
 });
 
+// function navigateToPage(newPage) {
+//   currentPage.value = newPage;
+// }
+
 // --- Functions ---
 
 async function handleLogout() {
@@ -120,6 +138,11 @@ body {
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: white;
 }
 
 /* --- Nav Bar Styling --- */
