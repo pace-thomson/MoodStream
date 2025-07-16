@@ -1,241 +1,149 @@
 <template>
-    <div class="account-container">
-      <div class="account-preferences">
-        <div class="catalog-preferences">
-          <h2>Your Streaming Services</h2>
-          <p>Select the services you subscribe to for tailored recommendations.</p>
-          <div class="catalog-buttons">
-            <button
-              v-for="catalog in catalogs"
-              :key="catalog.name"
-              @click="selectCatalog(catalog.name)"
-              :class="{ selected: catalog.subscribed }"
-              class="catalog-button"
-            >
-              <img
-                :src="catalog.logo"
-                :alt="`Logo of ${catalog.name}`"
-                class="catalog-logo"
-              />
-            </button>
+    <div class="account-page-container">
+      <h1>Account Settings</h1>
+  
+      <!-- Section for updating user's name -->
+      <div class="account-section">
+        <h2>Update Your Profile</h2>
+        <form @submit.prevent="handleNameUpdate" class="profile-form">
+          <div class="input-group">
+            <label for="first-name">First Name</label>
+            <input type="text" id="first-name" v-model="firstName" required />
           </div>
-        </div>
-    
-        <div class="genre-preferences">
-          <h2>Your Preferred Genres</h2>
-          <p>Choose your favorite genres to help us find movies you'll love.</p>
-          <div class="genre-buttons">
-            <button
-              v-for="genre in genres"
-              :key="genre.name"
-              @click="selectGenre(genre.name)"
-              :class="{ selected: genre.selected }"
-              class="genre-button"
-            >
-              {{ genre.name }}
-            </button>
+          <div class="input-group">
+            <label for="last-name">Last Name</label>
+            <input type="text" id="last-name" v-model="lastName" required />
           </div>
-        </div>
-    
-        <div class="submit-button-container">
-          <!-- This button uses the "delete-then-insert" method -->
-          <button @click="updatePreferences" class="submit-button">Update Preferences</button>
-        </div>
+          <button type="submit" class="submit-button">Save Name</button>
+        </form>
+      </div>
+  
+      <!-- Section for updating preferences, embedding the other component -->
+      <div class="account-section">
+         <!-- 
+          Here we embed the preferences component.
+          - We pass the user's ID to it.
+          - We explicitly set currentPage to 'account' to trigger the update logic.
+        -->
+        <AccountPreferences 
+          :current-user-id="props.currentUserId"
+          :current-page="props.currentPage" 
+        />
       </div>
     </div>
   </template>
-    
+  
   <script setup>
   import { ref, onMounted } from 'vue';
-  // You'll need to import your supabase client and the new update functions
-  import { supabase, updateUserPreferences } from '../supabase.js';
+  // We need to import the new name update function and the preferences component
+  import { supabase, updateUserName } from '../supabase.js';
+  import AccountPreferences from './AccountPreferences.vue'; // Assuming the component is saved here
   
   const props = defineProps({
-    currentUserId: {
+    currentUserId:{
+        type: "String",
+    },
+    currentPage: {
       type: String,
-      required: true
     },
   });
   
-  // --- Local State for UI ---
-  const catalogs = ref([
-      { name: 'netflix', subscribed: false, logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg' },
-      { name: 'prime', subscribed: false, logo: 'https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg' },
-      { name: 'disney', subscribed: false, logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg' },
-      // ... add all other catalogs here
-  ]);
+  const firstName = ref('');
+  const lastName = ref('');
   
-  const genres = ref([
-      { id: 'action', name: 'Action', selected: false },
-      { id: 'comedy', name: 'Comedy', selected: false },
-      { id: 'drama', name: 'Drama', selected: false },
-      // ... add all other genres here
-  ]);
-  
-  // --- Lifecycle Hook ---
-  // When the component is loaded, fetch the user's current preferences
+  // When the component loads, fetch the user's current name to pre-fill the form
   onMounted(async () => {
-    if (props.currentUserId) {
-      await fetchUserPreferences();
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('first_name, last_name')
+        .eq('id', props.currentUser.id)
+        .single(); // .single() is used to get just one record
+  
+      if (error) throw error;
+  
+      if (data) {
+        firstName.value = data.first_name;
+        lastName.value = data.last_name;
+      }
+    } catch (error) {
+      console.error('Error fetching profile name:', error.message);
     }
   });
   
-  // --- Data Fetching ---
-  async function fetchUserPreferences() {
+  async function handleNameUpdate() {
     try {
-      // Fetch currently saved catalogs
-      const { data: savedCatalogs, error: catalogError } = await supabase
-        .from('user_catalogs')
-        .select('service')
-        .eq('user_id', props.currentUserId);
-      
-      if (catalogError) throw catalogError;
-  
-      // Update the local state to reflect saved catalogs
-      const savedCatalogNames = savedCatalogs.map(c => c.service);
-      catalogs.value.forEach(catalog => {
-        if (savedCatalogNames.includes(catalog.name)) {
-          catalog.subscribed = true;
-        }
-      });
-  
-      // Fetch currently saved genres
-      const { data: savedGenres, error: genreError } = await supabase
-        .from('user_genres')
-        .select('genre')
-        .eq('user_id', props.currentUserId);
-  
-      if (genreError) throw genreError;
-  
-      // Update the local state to reflect saved genres
-      const savedGenreIds = savedGenres.map(g => g.genre);
-      genres.value.forEach(genre => {
-        if (savedGenreIds.includes(genre.id)) {
-          genre.selected = true;
-        }
-      });
-  
+      await updateUserName(props.currentUser.id, firstName.value, lastName.value);
+      alert('Your name has been updated successfully!');
     } catch (error) {
-      console.error('Error fetching user preferences:', error.message);
-      alert('Could not load your preferences.');
-    }
-  }
-  
-  
-  // --- UI Interaction ---
-  function selectCatalog(catalogName) {
-    const catalog = catalogs.value.find(c => c.name === catalogName);
-    if (catalog) {
-      catalog.subscribed = !catalog.subscribed;
-    }
-  }
-  
-  function selectGenre(genreName) {
-    const genre = genres.value.find(g => g.name === genreName);
-    if (genre) {
-      genre.selected = !genre.selected;
-    }
-  }
-  
-  // --- Data Submission ---
-  async function updatePreferences() {
-    const selectedCatalogs = catalogs.value.filter(c => c.subscribed).map(c => c.name);
-    const selectedGenres = genres.value.filter(g => g.selected).map(g => g.id);
-  
-    try {
-      // This single function will handle the delete-then-insert logic
-      await updateUserPreferences(props.currentUserId, selectedCatalogs, selectedGenres);
-      alert('Preferences updated successfully!');
-    } catch (error) {
-      console.error('Failed to update preferences:', error);
-      alert('There was an error saving your preferences.');
+      console.error('Error updating name:', error.message);
+      alert('Failed to update your name.');
     }
   }
   </script>
   
   <style scoped>
-  .account-container {
+  .account-page-container {
     padding: 2rem;
     max-width: 1200px;
-    margin: 2rem auto;
+    margin: 0 auto;
   }
   
-  .account-preferences {
+  h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .account-section {
     background-color: #ffffff;
     padding: 2.5rem;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
   }
   
-  .catalog-preferences, .genre-preferences {
-    margin-bottom: 3rem;
-  }
-  
-  h2 {
+  .account-section h2 {
     font-size: 1.75rem;
     color: #2c3e50;
-    border-bottom: 2px solid #ecf0f1;
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  p {
-    color: #7f8c8d;
     margin-top: 0;
     margin-bottom: 1.5rem;
   }
   
-  .catalog-buttons, .genre-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+  .profile-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: flex-end;
   }
   
-  .catalog-button {
-    background-color: #f8f9fa;
+  .input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #34495e;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
     border: 2px solid #dfe4ea;
     border-radius: 8px;
-    padding: 0.5rem;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
   }
   
-  .catalog-button.selected {
+  .input-group input:focus {
+    outline: none;
     border-color: #42b983;
-    box-shadow: 0 0 10px rgba(66, 185, 131, 0.5);
-  }
-  
-  .catalog-logo {
-    height: 40px;
-    width: auto;
-    max-width: 100px;
-  }
-  
-  .genre-button {
-    background-color: #f8f9fa;
-    border: 2px solid #dfe4ea;
-    color: #34495e;
-    padding: 0.75rem 1.5rem;
-    border-radius: 20px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .genre-button.selected {
-    background-color: #2c3e50;
-    color: white;
-    border-color: #2c3e50;
-  }
-  
-  .submit-button-container {
-    text-align: right;
-    margin-top: 2rem;
   }
   
   .submit-button {
-    padding: 1rem 2.5rem;
-    font-size: 1.1rem;
+    padding: 0.85rem 2rem;
+    font-size: 1rem;
     font-weight: bold;
     color: white;
     background-color: #42b983;
@@ -243,6 +151,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s;
+    white-space: nowrap;
   }
   
   .submit-button:hover {

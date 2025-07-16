@@ -74,24 +74,71 @@ export async function logout(supabaseClient) {
     }
 }
 
-export async function saveUserCatalogs(userId, selectedCatalogs) {
-    if (!userId || !Array.isArray(selectedCatalogs)) {
-      throw new Error('Invalid userId or selectedCatalogs');
-    }
+export async function saveInitialPreferences(userId, selectedCatalogs, selectedGenres) {
+    // Save catalogs
+    const catalogInserts = selectedCatalogs.map(service => ({ user_id: userId, service }));
+    const { error: catalogError } = await supabase.from('user_catalogs').insert(catalogInserts);
+    if (catalogError) throw catalogError;
   
-    const inserts = selectedCatalogs.map(service => ({
-      user_id: userId,
-      service
-    }));
-  
-    const { data, error } = await supabase
-      .from('user_catalogs')
-      .insert(inserts);
-  
-    if (error) {
-      console.error('Insert error:', error);
-    }
-  
-    return { data, error };
+    // Save genres
+    const genreInserts = selectedGenres.map(genre => ({ user_id: userId, genre }));
+    const { error: genreError } = await supabase.from('user_genres').insert(genreInserts);
+    if (genreError) throw genreError;
   }
+
+  export async function updateUserPreferences(userId, selectedCatalogs, selectedGenres) {
+    // --- Update Catalogs ---
+    // Step 1: Delete all existing catalog entries for this user.
+    const { error: deleteCatalogError } = await supabase
+      .from('user_catalogs')
+      .delete()
+      .eq('user_id', userId);
+    
+    if (deleteCatalogError) throw deleteCatalogError;
+  
+    // Step 2: Insert the new set of catalog preferences.
+    if (selectedCatalogs.length > 0) {
+      const catalogInserts = selectedCatalogs.map(service => ({ user_id: userId, service }));
+      const { error: insertCatalogError } = await supabase.from('user_catalogs').insert(catalogInserts);
+      if (insertCatalogError) throw insertCatalogError;
+    }
+  
+    // --- Update Genres ---
+    // Step 3: Delete all existing genre entries for this user.
+    const { error: deleteGenreError } = await supabase
+      .from('user_genres')
+      .delete()
+      .eq('user_id', userId);
+  
+    if (deleteGenreError) throw deleteGenreError;
+  
+    // Step 4: Insert the new set of genre preferences.
+    if (selectedGenres.length > 0) {
+      const genreInserts = selectedGenres.map(genre => ({ user_id: userId, genre }));
+      const { error: insertGenreError } = await supabase.from('user_genres').insert(genreInserts);
+      if (insertGenreError) throw insertGenreError;
+    }
+  }
+  
+
+// export async function saveUserCatalogs(userId, selectedCatalogs) {
+//     if (!userId || !Array.isArray(selectedCatalogs)) {
+//       throw new Error('Invalid userId or selectedCatalogs');
+//     }
+  
+//     const inserts = selectedCatalogs.map(service => ({
+//       user_id: userId,
+//       service
+//     }));
+  
+//     const { data, error } = await supabase
+//       .from('user_catalogs')
+//       .insert(inserts);
+  
+//     if (error) {
+//       console.error('Insert error:', error);
+//     }
+  
+//     return { data, error };
+//   }
   
