@@ -14,23 +14,21 @@
       </div>
       <div class="emoji-container">
         <span 
+          v-for="emoji in emojis" :key="emoji" @click="selectEmoji(emoji)"
           :class="{
             'disabled-emoji': emojisOrPrompt == 'prompt', 
             'emoji':  emojisOrPrompt != 'prompt',
             'emoji-selected': mood.includes(emoji.name)
           }"
-          v-for="emoji in emojis" :key="emoji" @click="selectEmoji(emoji)"
         >
           <img 
             :src="getImageUrl(emoji.fileName)" :alt="emoji.name" 
-            
           />
         </span>
       </div>
       <div class="submit-button">
         <button @click="getRecommendations">Get Recommendations</button>
       </div>
-
 
     </div>
   </section>
@@ -67,6 +65,8 @@ const emojiGenres = {
 
 
 watch(moodTranscript, (newTranscript, oldTranscript) => {
+  console.log('emojiesorprompt:', emojisOrPrompt.value);
+
   if (newTranscript != '') {
     emojisOrPrompt.value = 'prompt'
     console.log('new emojisOrPrompt: prompt');
@@ -75,28 +75,21 @@ watch(moodTranscript, (newTranscript, oldTranscript) => {
   }
 })
 
-watch(autoPrompt, (newOne, oldOne) => {
-  if (newOne != []) {
-    emojisOrPrompt.value = 'emojis'
-    console.log('new emojisOrPrompt: emojis');
-  }
-})
-
-
 
 function selectEmoji(emoji) {
   if (emojisOrPrompt.value == 'prompt') {
     console.log('invalid click');
-    return;
   } else if (mood.value.includes(emoji.name)) {
     mood.value = mood.value.filter(item => item !== emoji.name);
-    console.log('mood', mood.value);
-    return;
+    console.log('Mood removed, new mood:', mood.value);
+    if (mood.value.length == 0) {
+      emojisOrPrompt.value = 'either';
+    }
   } else {
     mood.value.push(emoji.name);
     autoPrompt.value.push(emojiGenres[emoji.name]);
-    console.log('Mood selected:', mood.value);
-    // console.log('Auto prompt:', autoPrompt.value);
+    emojisOrPrompt.value = 'emojis';
+    console.log('Mood added, new mood:', mood.value);
   }
 }
 
@@ -130,7 +123,8 @@ async function getRecommendations() {
 .home-header h1 {
   font-size: 3rem;
   font-weight: 700;
-  color: #2c3e50; /* Match navbar color */
+  color: #2c3e50;
+  /* Match navbar color */
   margin: 0;
 }
 
@@ -141,11 +135,6 @@ async function getRecommendations() {
 }
 
 
-
-.disabled-emoji:hover {
-  transform: none;
-}
-
 /* --- Mood Selection Area --- */
 .home-mood-container {
   max-width: 800px;
@@ -155,24 +144,25 @@ async function getRecommendations() {
 }
 
 .home-mood-container h2 {
-    font-size: 1.75rem;
-    color: #34495e;
-    margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  color: #34495e;
+  margin-bottom: 1.5rem;
 }
 
 .input-container input {
-    width: 100%;
-    padding: 1rem;
-    font-size: 1.1rem;
-    border: 2px solid #dfe4ea;
-    border-radius: 8px;
-    box-sizing: border-box; /* Important for padding */
-    transition: border-color 0.3s;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border: 2px solid #dfe4ea;
+  border-radius: 8px;
+  box-sizing: border-box;
+  /* Important for padding */
+  transition: border-color 0.3s;
 }
 
 .input-container input:focus {
-    outline: none;
-    border-color: #42b983;
+  outline: none;
+  border-color: #42b983;
 }
 
 .disabled-input {
@@ -181,22 +171,22 @@ async function getRecommendations() {
 
 
 .emoji-container {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .emoji img {
-  height: 60px; /* Slightly larger */
+  height: 60px;
+  /* Slightly larger */
   cursor: pointer;
-  transition: transform 0.2s ease-in-out;
 }
 
 .emoji-selected {
   transform: scale(1.2);
-  transition: transform 0.15s ease-in-out;
+  transition: transform 0.1s ease-in-out;
 }
 
 .disabled-emoji img {
@@ -209,23 +199,27 @@ async function getRecommendations() {
   transform: none;
 }
 
+.disabled-emoji:hover {
+  transform: none;
+}
+
 .submit-button {
-    margin-top: 2.5rem;
+  margin-top: 2.5rem;
 }
 
 .submit-button button {
-    padding: 1rem 2.5rem;
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: white;
-    background-color: #42b983;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  background-color: #42b983;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .submit-button button:hover {
-    background-color: #3aa873;
+  background-color: #3aa873;
 }
 </style>
