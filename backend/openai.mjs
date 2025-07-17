@@ -27,6 +27,14 @@ export class OpenAiHandler {
                 tools: extractPreferenceTool
             });
 
+            console.log('Ai response', response);
+            // console.log('Ai json parse', await JSON.parse(response));
+
+                // For bad user input
+            if (response.output[0].arguments == undefined) {
+                return null;
+            }
+
             const result = JSON.parse(response.output[0].arguments);
             console.log("Preferences extracted:\n", result);
             let final = new AiResponseObj(result);

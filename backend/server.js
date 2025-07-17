@@ -13,6 +13,9 @@ const availabilityApiHandler = new MovieNight(process.env.RAPID_API_KEY);
 
 async function getShowsWithPrompt(data) {
     let aiResponse = await openAiHandler.getPreferencesFromTranscript(data.prompt);
+    if (aiResponse == null) {
+        return null;
+    }
     const showList = await availabilityApiHandler.getShowsUsingPrompt(aiResponse, data.catalogs);
     return showList;
 }
@@ -32,11 +35,12 @@ app.post('/recommend', express.json(), async (req, res) => {
     const data = req.body;
     console.log('data', data);
 
-    console.log("data.catalogs", data.catalogs);
-
     let showsList;
     if (data.prompt) {
         showsList = await getShowsWithPrompt(data);
+        if (showsList == null) {
+            res.sendStatus(400);
+        }
     } else if (data.genres) {
         showsList = await getShowsWithGenres(data);
     }

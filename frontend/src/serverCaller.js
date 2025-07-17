@@ -1,5 +1,5 @@
 let serverUrl;
-if (window.location.hostname == "127.0.0.1") {
+if (window.location.hostname == "127.0.0.1" || window.location.hostname == "localhost") {
     serverUrl = "http://localhost:3000";
 } else {
     serverUrl = "https://MoodStream.onrender.com"
@@ -17,6 +17,9 @@ export async function getShowsWithPrompt(prompt, catalogs) {
 
     const response = await fetch(`${serverUrl}/recommend`, options);
 
+    if (response.status == 400) {
+        return null;
+    }
     return await response.json();
 }
 
