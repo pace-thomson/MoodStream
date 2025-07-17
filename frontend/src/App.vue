@@ -131,6 +131,99 @@ async function handleLogout() {
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
+  background-color: #1a202c; /* Dark background */
+  color: #e2e8f0; /* Light text */
+}
+
+#app {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: #735CD1; /* Purple accent for links */
+}
+
+/* --- Nav Bar Styling --- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #2d3748; /* Slightly lighter dark for navbar */
+  color: white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.brand {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -1px;
+  color: #ffffff;
+}
+
+.navbar-center {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-button {
+  background: none;
+  border: 1px solid transparent;
+  color: #a0aec0; /* Softer grey for non-active buttons */
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-button:hover {
+  background-color: rgba(74, 85, 104, 0.5);
+  color: #ffffff;
+}
+
+.account-button {
+  background-color: #735CD1; /* Purple accent */
+  color: white;
+  border-color: #735CD1;
+}
+
+.account-button:hover {
+  background-color: #624FAD; /* Darker purple */
+  border-color: #624FAD;
+}
+
+.logout-button {
+  background-color: transparent;
+  color: #a0aec0;
+  border: 1px solid #4a5568;
+}
+
+.logout-button:hover {
+  background-color: #c0392b;
+  border-color: #c0392b;
+  color: white;
+}
+</style>
+
+
+<!-- <style>
+/* Global styles for the entire application */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
   background-color: #f4f6f9; /* A light grey background for the app */
   color: #333;
 }
@@ -219,7 +312,7 @@ a {
   border-color: #c0392b;
   color: white;
 }
-</style>
+</style> -->
 
 
 <!-- DELETE ME IM FOR TESTING 

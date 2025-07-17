@@ -1,7 +1,7 @@
 <template>
   <section class="home">
     <div class="home-header">
-      <h1>moodstream</h1>
+      <h1 class="gradient-title">moodstream</h1>
       <p>Discover movies or shows that match your mood.</p>
     </div>
     <div class="home-mood-container">
@@ -132,6 +132,231 @@ async function getRecommendations() {
 
 .home-header {
   text-align: center;
+  /*margin-bottom: 3rem;*/
+  padding: 2.5rem;
+  background-color: #2d3748; /* Dark card background */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.home-header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0;
+  /* Gradient properties */
+  background: linear-gradient(to right, #735CD1, #A78BFA);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.home-header p {
+  font-size: 1.25rem;
+  color: #a0aec0;
+  margin-top: 0.5rem;
+}
+
+/* --- Mood Selection Area --- */
+.home-mood-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.home-mood-container h2 {
+  font-size: 1.75rem;
+  /*color: #34495e;*/
+  margin-bottom: 1.5rem;
+}
+
+
+
+.input-container input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border: 2px solid #dfe4ea;
+  border-radius: 8px;
+  box-sizing: border-box;
+  /* Important for padding */
+  transition: border-color 0.3s;
+}
+
+.input-container input:focus {
+  outline: none;
+  border-color: #735CD1;;
+}
+
+.disabled-input {
+  pointer-events: none;
+}
+
+
+.emoji-container {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.emoji img {
+  height: 60px;
+  /* Slightly larger */
+  cursor: pointer;
+}
+
+.emoji-selected {
+  transform: scale(1.2);
+  transition: transform 0.1s ease-in-out;
+}
+
+.disabled-emoji img {
+  filter: grayscale(80%);
+  transition: none;
+  height: 60px;
+}
+
+.disabled-emoji img:hover {
+  transform: none;
+}
+
+.disabled-emoji:hover {
+  transform: none;
+}
+
+.submit-button {
+  margin-top: 2.5rem;
+}
+
+.submit-button button {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  background-color: #735CD1; /* Purple accent */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button button:hover {
+  background-color: #624FAD; /* Darker purple */
+}
+
+.gradient-title {
+  /* Define the gradient from left (to right) with two purple shades */
+  background: linear-gradient(to right, #735CD1, #d1c4f8);
+
+  /* Clip the background to the shape of the text */
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  /* Make the text color transparent so the background gradient is visible */
+  color: transparent;
+}
+/* .home-mood-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.home-mood-container h2 {
+  font-size: 1.75rem;
+  color: #cbd5e0;
+  margin-bottom: 1.5rem;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  background-color: #1a202c;
+  border: 2px solid #4a5568;
+  color: #e2e8f0;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.input-container input:focus {
+  outline: none;
+  border-color: #42b983;
+}
+
+.disabled-input {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.emoji-container {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.emoji img {
+  height: 60px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.emoji:hover img {
+  transform: scale(1.1);
+}
+
+.emoji-selected img {
+  transform: scale(1.2);
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(66, 185, 131, 0.7);
+}
+
+.disabled-emoji img {
+  filter: grayscale(80%) opacity(50%);
+  cursor: not-allowed;
+}
+
+.disabled-emoji:hover img {
+  transform: none;
+}
+
+.submit-button {
+  margin-top: 2.5rem;
+}
+
+.submit-button button {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  background-color: #42b983;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button button:hover {
+  background-color: #3aa873;
+} */
+</style>
+
+
+<!-- <style scoped>
+/* Scoped styles ensure these only apply to the Home.vue component  LIGHT THEME */
+.home {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-header {
+  text-align: center;
   margin-bottom: 3rem;
   padding: 2.5rem;
   background-color: #ffffff;
@@ -241,4 +466,4 @@ async function getRecommendations() {
 .submit-button button:hover {
   background-color: #3aa873;
 }
-</style>
+</style> -->
