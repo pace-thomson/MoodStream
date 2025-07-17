@@ -1,7 +1,7 @@
 <template>
   <section class="home">
     <div class="home-header">
-      <h1 class="gradient-title">moodstream</h1>
+      <img src="../assets/images/moodstreamlogo/moodstream_logo.png" alt="Moodstream Logo" class="header-logo"/>
       <p>Discover movies or shows that match your mood.</p>
     </div>
     <div class="home-mood-container">
@@ -49,7 +49,6 @@ import { getShowsWithGenres, getShowsWithPrompt } from '../serverCaller.js'
 import AccountPreferences from '@/components/AccountPreferences.vue';
 import { SupabaseClient } from '@supabase/supabase-js';
 
- 
 
 const currentPage = defineModel();
 const emojisOrPrompt = ref('either');
@@ -139,15 +138,15 @@ async function getRecommendations() {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.home-header h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  margin: 0;
-  /* Gradient properties */
-  background: linear-gradient(to right, #735CD1, #A78BFA);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/* Style for the logo image */
+.header-logo {
+  display: block; /* This is necessary for margin:auto to work */
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 400px; /* Control the size of the logo */
+  width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
 }
 
 .home-header p {

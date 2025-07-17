@@ -1,0 +1,25 @@
+<svg width="400" height="100" viewBox="0 0 400 100" aria-labelledby="logoTitle">
+        <title id="logoTitle">Moodstream Logo</title>
+        <defs>
+            <!-- Defines the linear gradient for the text fill -->
+            <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#735CD1;" />
+                <stop offset="100%" style="stop-color:#C4B5FD;" /> 
+                <!-- Updated to a much lighter purple -->
+            </linearGradient>
+        </defs>
+        
+        <!-- The text element that uses the gradient as its fill color -->
+        <text 
+            x="50%" 
+            y="50%" 
+            dy=".35em" 
+            text-anchor="middle" 
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" 
+            font-size="60" 
+            font-weight="600" 
+            letter-spacing="-2"
+            fill="url(#purpleGradient)">
+            moodstream
+        </text>
+    </svg>
