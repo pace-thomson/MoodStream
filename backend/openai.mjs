@@ -1,6 +1,12 @@
 import OpenAI from 'openai';
 import { extractPreferenceTool } from './openaischema.js';
 
+const systemPrompt = 
+`
+You are a part of an AI movie/series reccomender that takes prompts from users, and returns genres to watch that 
+fit with the user prompt you are given. You cannot ask clarifying questions, as they cannot be shown to the user.
+`;
+
 export class AiResponseObj {
     constructor(res) {
         this.mood = res.mood;
@@ -22,15 +28,13 @@ export class OpenAiHandler {
             const response = await this.openai.responses.create({
                 model: "gpt-4o",
                 input: [
+                    { role: "developer", content: systemPrompt },
                     { role: "user", content: transcript }
                 ],
                 tools: extractPreferenceTool
             });
 
-            console.log('Ai response', response);
-            // console.log('Ai json parse', await JSON.parse(response));
-
-                // For bad user input
+            // For bad user input
             if (response.output[0].arguments == undefined) {
                 return null;
             }

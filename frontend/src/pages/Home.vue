@@ -57,7 +57,7 @@ const currentPage = defineModel();
 const emojisOrPrompt = ref('either');
 const mood = ref([]);
 const moodTranscript = ref('');
-const userSentBadPrompt = ref(true);
+const userSentBadPrompt = ref(false);
 
 const props = defineProps({
   supabase: SupabaseClient,
