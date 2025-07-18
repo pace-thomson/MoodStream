@@ -42,7 +42,7 @@ export class MovieNight {
 
         const filter = {
             country: "us",
-            catalogs: catalogs,
+            catalogs: this.addDotSubscriptionAndFree(catalogs),
             genres: aiResponseObj.genres,
             orderBy: "popularity_alltime",
         };
@@ -60,6 +60,16 @@ export class MovieNight {
         }
 
         return filter;
+    }
+
+    addDotSubscriptionAndFree(catalogs) {
+        let subList = [];
+        let freeList = [];
+        for (let i = 0; i < catalogs.length; i++) {
+            subList[i] = catalogs[i] + '.subscription';
+            freeList[i] = catalogs[i] + '.free';
+        }
+        return subList.concat(freeList);
     }
 
     async getGenres() {

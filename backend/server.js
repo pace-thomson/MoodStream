@@ -55,6 +55,8 @@ app.listen(PORT, () => {
 });
 
 
+
+
 // async function tester() {
 //     // const data = await availabilityApiHandler.client.showsApi.searchShowsByFiltersRaw({
 //     //     title: "The Dark Knight",
@@ -62,34 +64,27 @@ app.listen(PORT, () => {
         
 //     // });
 
+//     let catalogs = ['netflix', 'disney', 'peacock']
+
+//     let fixed = addDotSubscription(catalogs);
+
+//     console.log(fixed);
+
 //     const filter = {
 //         country: "us",
-//         catalogs: ['netflix', 'prime'],
+//         catalogs: fixed,
 //         showType: "movie",
 //         orderBy: "popularity_alltime",
 //     };
 
 //     const idk = await availabilityApiHandler.client.showsApi.searchShowsByFilters(filter);
 
-//     console.log(idk["shows"][0]);
+//     // idk['shows'].forEach((show) => {
+//     //     console.log('title: ', show.title);
+//     //     console.log("show.streamingOptions", show.streamingOptions);
+//     // })
 
-//     // let biglist = [];
-
-//     // let shows = idk.shows;
-
-//     // shows.array.forEach(element => {
-//     //     const newObj = {
-//     //         thing: element.itemType,
-//     //         showType: element.showType,
-//     //         thing: element.id,
-//     //         thing: element.imdbId,
-//     //         thing: element.tmdbId,
-//     //         thing: element.title,
-//     //         thing: element.overview,
-//     //         linke: element.ste,
-//     //         catalog: []
-//     //     }
-//     // });
+//     console.log("idk['shows'][0]", idk["shows"][0].streamingOptions);
 
     
 // }
