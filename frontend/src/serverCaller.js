@@ -35,5 +35,9 @@ export async function getShowsWithGenres(genres, catalogs) {
 
     const response = await fetch(`${serverUrl}/recommend`, options);
 
+    if (response.status == 400) {
+        return null;
+    }
+
     return await response.json();
 }

@@ -29,7 +29,9 @@
           See Last Reccomendations
         </button>
       </div>
-
+    </div>
+    <div v-if="isLoading">
+      <h1>I'M LOADING HEHE</h1>
     </div>
   </section>
 </template>
@@ -72,7 +74,6 @@ const emojiGenres = {
   neutral: ['action', 'adventure', 'fantasy', 'mystery', 'thriller', 'science fiction', 'comedy']
 };
 
-
 watch(moodTranscript, (newTranscript, oldTranscript) => {
   if (newTranscript != '') {
     emojisOrPrompt.value = 'prompt'
@@ -84,14 +85,12 @@ watch(moodTranscript, (newTranscript, oldTranscript) => {
 
 function selectEmoji(emoji) {
   if (emojisOrPrompt.value == 'prompt') {
-    console.log('invalid click');
+    return;
   } else if (mood.value.includes(emoji.name)) {
     mood.value = mood.value.filter(item => item !== emoji.name);
-    console.log('Mood removed, new mood:', mood.value);
-    if (mood.value.length == 0) {
-      emojisOrPrompt.value = 'either';
-    }
+    if (mood.value.length == 0) emojisOrPrompt.value = 'either';
   } else {
+    emojisOrPrompt.value = 'emojis';
     mood.value.push(emoji.name);
   }
 }
@@ -102,7 +101,10 @@ function getImageUrl(fileName) {
 
 async function getRecommendations() {
   userSentBadPrompt.value = false;
+  isLoading.value = true;
+
   let showss;
+  console.log("emojisOrPrompt.value", emojisOrPrompt.value);
   if (emojisOrPrompt.value == 'prompt') {
     showss = await getShowsWithPrompt(moodTranscript.value, props.catalogs);
   } else if (emojisOrPrompt.value == 'emojis') {
@@ -111,15 +113,18 @@ async function getRecommendations() {
   }
   if (showss == null) {
     userSentBadPrompt.value = true;
+    isLoading.value = false;
     return;
   }
   console.log("showss", showss);
+  isLoading.value = false;
   reccomendedShows.value = showss.shows;
   homeState.value = 'reccomendations';
 }
 
 function getGenreListFromMoods() {
   let genreArray = [];
+  console.log("genreArray", genreArray);
   for (let i = 0; i < mood.value.length; i++) {
     let moodGenres = emojiGenres[mood.value[i]];
     genreArray = genreArray.concat(moodGenres);
@@ -131,11 +136,6 @@ function getGenreListFromMoods() {
 
 <style scoped>
 /* Scoped styles ensure these only apply to the Home.vue component */
-.home {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
 
 .home-header {
   text-align: center;

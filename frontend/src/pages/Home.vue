@@ -45,5 +45,11 @@ const props = defineProps({
 
 <style scoped>
 
+.home {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 </style>
 

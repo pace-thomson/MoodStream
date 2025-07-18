@@ -20,7 +20,6 @@ const props = defineProps({
   reccomendedShows: Array
 });
 
-
 </script>
 
 <style scoped>

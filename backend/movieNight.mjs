@@ -24,8 +24,9 @@ export class MovieNight {
         try {
             let filter = {
                 country: "us",
-                catalogs: catalogs,
+                catalogs: this.getFixedSubscriptionList(catalogs),
                 genres: genres,
+                genresRelation: 'or',
                 orderBy: "popularity_alltime",
             };
     
