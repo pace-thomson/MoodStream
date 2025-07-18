@@ -12,6 +12,9 @@
           :class="{'disabled-input': emojisOrPrompt == 'emojis' }"
           type="text" v-model="moodTranscript" placeholder="I'm feeling..." 
         />
+        <p v-if="userSentBadPrompt" class="bad-user-prompt">
+          Could you please clarify your feelings or provide more context for what you feel like watching?
+        </p>
       </div>
       <div class="emoji-container">
         <span 
@@ -47,23 +50,20 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { getShowsWithGenres, getShowsWithPrompt } from '../serverCaller.js'
-import AccountPreferences from '@/components/AccountPreferences.vue';
 import { SupabaseClient } from '@supabase/supabase-js';
-
+ 
 
 const currentPage = defineModel();
 const emojisOrPrompt = ref('either');
 const mood = ref([]);
-const autoPrompt = ref([]);
 const moodTranscript = ref('');
+const userSentBadPrompt = ref(true);
 
 const props = defineProps({
-  supabase: {
-    type: SupabaseClient
-  },
-  currentUserId: {
-    type: String,
-  }
+  supabase: SupabaseClient,
+  currentUserId: String,
+  catalogs: Array,
+  genres: Array
 });
 
 const emojis = ref([
@@ -84,11 +84,8 @@ const emojiGenres = {
 
 
 watch(moodTranscript, (newTranscript, oldTranscript) => {
-  console.log('emojiesorprompt:', emojisOrPrompt.value);
-
   if (newTranscript != '') {
     emojisOrPrompt.value = 'prompt'
-    console.log('new emojisOrPrompt: prompt');
   } else {
     emojisOrPrompt.value = 'either'
   }
@@ -106,9 +103,6 @@ function selectEmoji(emoji) {
     }
   } else {
     mood.value.push(emoji.name);
-    autoPrompt.value.push(emojiGenres[emoji.name]);
-    emojisOrPrompt.value = 'emojis';
-    console.log('Mood added, new mood:', mood.value);
   }
 }
 
@@ -117,8 +111,29 @@ function getImageUrl(fileName) {
 }
 
 async function getRecommendations() {
-  const showss = await getShowsWithPrompt(moodTranscript.value, ['netflix', 'disney', 'prime']);
-  console.log(showss);
+  userSentBadPrompt.value = false;
+  let showss;
+  if (emojisOrPrompt.value == 'prompt') {
+    showss = await getShowsWithPrompt(moodTranscript.value, props.catalogs);
+  } else if (emojisOrPrompt.value == 'emojis') {
+    const genres = getGenreListFromMoods();
+    showss = await getShowsWithGenres(genres, props.catalogs);
+  }
+  if (showss == null) {
+    userSentBadPrompt.value = true;
+    return;
+  }
+  console.log("showss", showss);
+}
+
+function getGenreListFromMoods() {
+  let genreArray = [];
+  for (let i = 0; i < mood.value.length; i++) {
+    let moodGenres = emojiGenres[mood.value[i]];  
+    genreArray = genreArray.concat(moodGenres);
+  }
+  console.log("genreArray", genreArray);
+  return genreArray;
 }
 </script>
 
@@ -199,6 +214,13 @@ async function getRecommendations() {
 
 .disabled-input {
   pointer-events: none;
+}
+
+.bad-user-prompt {
+  background-color: #c534347b;
+  border-left: 6px solid #b12626 ;
+  padding: 4px;
+  color: white;
 }
 
 

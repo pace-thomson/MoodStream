@@ -41,6 +41,8 @@
       v-model="currentPage"
       :current-user-id="currentUserId"
       :supabase="supabase"
+      :catalogs="userCatalogs"
+      :genres="userGenres"
     />
 
     <Account 
@@ -58,7 +60,6 @@
 import { ref, watch, onMounted } from 'vue';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseUrl, supabaseAnonKey, getUserInfo, logout } from './supabase.js';
-import { getShowsWithPrompt, getShowsWithGenres } from './serverCaller.js'
 
 import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
@@ -68,7 +69,7 @@ import Account from './pages/Account.vue';
 
 
 // --- State Management ---
-let currentPage = ref(''); // Default to 'login' page
+let currentPage = ref('login'); // Default to 'login' page
 
 // -- Ref variables --
 const currentUserId = ref(null);
