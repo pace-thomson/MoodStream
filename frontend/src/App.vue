@@ -38,7 +38,6 @@
   <div v-else id="main-page">
     <Home 
       v-if="currentPage == 'home'"
-      v-model="currentPage"
       :current-user-id="currentUserId"
       :supabase="supabase"
       :catalogs="userCatalogs"
