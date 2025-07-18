@@ -3,9 +3,7 @@
   <nav class="navbar" v-if="currentPage !== 'login' && currentPage !== 'register'">
     <div class="navbar-left">
       <a href="/">
-        <span class="brand">
-          moodstream
-        </span>
+        <img src="./assets/images/moodstreamlogo/moodstream_logo.png" alt="Moodstream Logo" class="brand" />
       </a>
     </div>
     <div class="navbar-center">
@@ -150,8 +148,8 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #2d3748; /* Slightly lighter dark for navbar */
+  padding: 0.5rem 2rem; /* Reduced vertical padding */
+  background-color: #2d3748;
   color: white;
   box-shadow: 0 4px 6px rgba(0,0,0,0.2);
   position: sticky;
@@ -159,11 +157,15 @@ a {
   z-index: 1000;
 }
 
+.navbar-left a {
+  display: flex; /* Helps with vertical alignment */
+  align-items: center;
+}
+
+/* Updated .brand class to style the image */
 .brand {
-  font-size: 1.75rem;
-  font-weight: 600;
-  letter-spacing: -1px;
-  color: #ffffff;
+  height: 35px; /* Set a fixed height for the logo */
+  width: auto; /* Maintain aspect ratio */
 }
 
 .navbar-center {
@@ -180,7 +182,7 @@ a {
 .nav-button {
   background: none;
   border: 1px solid transparent;
-  color: #a0aec0; /* Softer grey for non-active buttons */
+  color: #a0aec0;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
@@ -195,13 +197,13 @@ a {
 }
 
 .account-button {
-  background-color: #735CD1; /* Purple accent */
+  background-color: #735CD1;
   color: white;
   border-color: #735CD1;
 }
 
 .account-button:hover {
-  background-color: #624FAD; /* Darker purple */
+  background-color: #624FAD;
   border-color: #624FAD;
 }
 

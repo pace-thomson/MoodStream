@@ -180,7 +180,7 @@ async function handleRegister() {
 .switch-form-link {
   background: none;
   border: none;
-  color: #735CD1; /* Purple accent */
+  color: #b6aae8; /* Purple accent */
   font-weight: 600;
   cursor: pointer;
   padding: 0;

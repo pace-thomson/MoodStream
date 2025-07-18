@@ -41,7 +41,7 @@ async function handleLogin() {
   <div class="auth-container">
     <div class="form-card">
       <div class="form-header">
-        <h1>moodstream</h1>
+        <img src="../assets/images/moodstreamlogo/moodstream_logo.png" alt="Moodstream Logo" class="header-logo" />
         <p>Streaming just for you.</p>
       </div>
       <form @submit.prevent="handleLogin" class="auth-form">
@@ -89,6 +89,13 @@ async function handleLogin() {
   margin-bottom: 2rem;
 }
 
+/* Style for the logo image */
+.header-logo {
+  max-width: 300px; /* Control the size of the logo */
+  width: 100%;
+  height: auto;
+}
+
 .form-header h1 {
   font-size: 2rem;
   font-weight: 700;
@@ -99,7 +106,7 @@ async function handleLogin() {
 .form-header p {
   font-size: 1rem;
   color: #a0aec0;
-  margin-top: 0.5rem;
+  margin-top: 0.1rem;
 }
 
 .auth-form .input-group {
@@ -158,7 +165,7 @@ async function handleLogin() {
 .switch-form-link {
   background: none;
   border: none;
-  color: #735CD1; /* Purple accent */
+  color: #b6aae8; /* Purple accent */
   font-weight: 600;
   cursor: pointer;
   padding: 0;

@@ -1,6 +1,7 @@
 <template>
   <section class="home">
     <div class="home-header">
+      <h3 class="welcome-text">Welcome to</h3>
       <img src="../assets/images/moodstreamlogo/moodstream_logo.png" alt="Moodstream Logo" class="header-logo"/>
       <p>Discover movies or shows that match your mood.</p>
     </div>
@@ -137,13 +138,21 @@ async function getRecommendations() {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+.welcome-text {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #a0aec0;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 8px;
+}
 
 /* Style for the logo image */
 .header-logo {
   display: block; /* This is necessary for margin:auto to work */
   margin-left: auto;
   margin-right: auto;
-  max-width: 400px; /* Control the size of the logo */
+  max-width: 380px; /* Control the size of the logo */
   width: 100%;
   height: auto;
   margin-bottom: 1rem;
@@ -176,6 +185,7 @@ async function getRecommendations() {
   padding: 1rem;
   font-size: 1.1rem;
   border: 2px solid #dfe4ea;
+  background-color: #f8f9fa;
   border-radius: 8px;
   box-sizing: border-box;
   /* Important for padding */

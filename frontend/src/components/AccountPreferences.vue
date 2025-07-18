@@ -297,7 +297,7 @@ p {
 }
 
 .account-preferences {
-  background-color: #ffffff;
+  background-color: #f8f9fa;
   padding: 2.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -310,7 +310,7 @@ p {
 h2 {
   font-size: 1.75rem;
   color: #2c3e50;
-  border-bottom: 2px solid #ecf0f1;
+  border-bottom: 2px solid #a5b7d4;
   padding-bottom: 0.5rem;
   margin-bottom: 0.5rem;
 }

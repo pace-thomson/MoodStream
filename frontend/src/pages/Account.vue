@@ -4,7 +4,7 @@
   
       <!-- Section for updating user's name, now in its own styled container -->
       <div class="account-section">
-        <h2>Update Your Profile</h2>
+        <h2>Update Your Profile Name</h2>
         <form @submit.prevent="handleNameUpdate" class="profile-form">
           <div class="input-group">
             <label for="first-name">First Name</label>
@@ -99,7 +99,7 @@ h1 {
 
 /* This class styles the white card container for the profile section */
 .account-section {
-  background-color: #ffffff;
+  background-color: #f8f9fa;
   padding: 2.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -136,7 +136,7 @@ h1 {
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  background-color: #f8f9fa; /* Light background for inputs */
+  background-color: #fff; /* Light background for inputs */
   border: 2px solid #dfe4ea; /* Light border */
   color: #2c3e50; /* Dark text */
   border-radius: 8px;
