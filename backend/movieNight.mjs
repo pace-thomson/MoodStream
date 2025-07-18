@@ -42,8 +42,9 @@ export class MovieNight {
 
         const filter = {
             country: "us",
-            catalogs: this.addDotSubscriptionAndFree(catalogs),
+            catalogs: this.getFixedSubscriptionList(catalogs),
             genres: aiResponseObj.genres,
+            genresRelation: 'or',
             orderBy: "popularity_alltime",
         };
 
@@ -62,14 +63,14 @@ export class MovieNight {
         return filter;
     }
 
-    addDotSubscriptionAndFree(catalogs) {
+    getFixedSubscriptionList(catalogs) {
         let subList = [];
         let freeList = [];
         for (let i = 0; i < catalogs.length; i++) {
             subList[i] = catalogs[i] + '.subscription';
             freeList[i] = catalogs[i] + '.free';
         }
-        return subList.concat(freeList);
+        return subList.concat(freeList).concat(['tubi', 'plutotv']);
     }
 
     async getGenres() {
