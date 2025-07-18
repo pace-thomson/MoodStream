@@ -5,7 +5,7 @@
         <!-- Titles can also be conditional based on the page -->
         <h2 v-if="isAccountPage">Update Your Streaming Services</h2>
         <h2 v-else>Select Your Streaming Services</h2>
-        <p>Select the services you subscribe to for tailored recommendations.</p>
+        <p>Select the services you subscribe to for tailored recommendations. We will automatically include tubi and PlutoTV's free streaming services in your recommendations.</p>
         <div class="catalog-buttons">
           <button
             v-for="catalog in catalogs"
