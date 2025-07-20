@@ -119,6 +119,33 @@ export async function saveInitialPreferences(userId, selectedCatalogs, selectedG
       if (insertGenreError) throw insertGenreError;
     }
   }
+
+export async function addShowToWatchlist(supabaseClient, userId, show) {
+    if (!supabaseClient || !userId || !show) {
+      console.error('Missing required data to add to watchlist.');
+      return { data: null, error: new Error('Missing user or show data.') };
+    }
+  
+    const showData = {
+      user_id: userId,          
+      id_imdb: show.imdbId,     
+      title: show.title,    
+    };
+  
+    const { data, error } = await supabaseClient
+      .from('user_watchlist')
+      .insert([showData])     
+  
+    if (error) {
+      if (error.message.includes('duplicate key value violates unique constraint')) {
+        console.log(`${show.title} is already in the watchlist.`);
+        return { data: null, error: { message: 'already_exists' } };
+      }
+      console.error('Error adding to watchlist:', error.message);
+    }
+  
+    return { data, error };
+  }
   
 
 // export async function saveUserCatalogs(userId, selectedCatalogs) {

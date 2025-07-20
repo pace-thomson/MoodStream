@@ -3,21 +3,22 @@
     <Prompt 
       v-if="homeState == 'prompt'"
       v-model:home-state="homeState"
-      v-model:reccomended-shows="reccomendedShows"
+      v-model:recommended-shows="recommendedShows"
       :current-user-id="props.currentUserId"
       :supabase="props.supabase"
       :catalogs="props.catalogs"
       :genres="props.userGenres"
     />
 
-    <Reccomendations 
-      v-else-if="homeState == 'reccomendations'"
+    <Recommendations 
+      v-else-if="homeState == 'recommendations'"
       v-model:home-state="homeState"
-      :reccomendedShows="reccomendedShows"
+      :recommendedShows="recommendedShows"
       :current-user-id="props.currentUserId"
       :supabase="props.supabase"
       :catalogs="props.catalogs"
     />
+
 
   </section>
 </template>
@@ -27,11 +28,11 @@ import { ref } from 'vue';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 import Prompt from './Prompt.vue';
-import Reccomendations from './Reccomendations.vue';
+import Recommendations from './Recommendations.vue';
  
-// can be 'prompt' or 'reccomendations'
+
 const homeState = ref('prompt');
-const reccomendedShows = ref(null);
+const recommendedShows = ref(null);
 
 const props = defineProps({
   supabase: SupabaseClient,
@@ -39,17 +40,12 @@ const props = defineProps({
   catalogs: Array,
   genres: Array
 });
-
-
 </script>
 
 <style scoped>
-
 .home {
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
 }
-
 </style>
-

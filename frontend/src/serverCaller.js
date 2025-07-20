@@ -41,3 +41,5 @@ export async function getShowsWithGenres(genres, catalogs) {
 
     return await response.json();
 }
+
+// I need a function here to get shows by Imdb Id for the Watchlist.vue page  getShowByImdbId(imdbId)   promise.allSettled(promises) ?

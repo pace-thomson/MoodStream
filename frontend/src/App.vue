@@ -8,7 +8,7 @@
     </div>
     <div class="navbar-center">
       <button class="nav-button">My Moods</button>
-      <button class="nav-button">My Watchlist</button>
+      <button @click="currentPage = 'watchlist'" class="nav-button">My Watchlist</button>
     </div>
     <div class="navbar-right">
       <button @click="currentPage = 'account'" class="nav-button account-button">Account</button>
@@ -44,6 +44,13 @@
       :genres="userGenres"
     />
 
+    <Watchlist
+      v-if="currentPage == 'watchlist'"
+      :current-user-id="currentUserId"
+      :supabase="supabase"
+      :catalogs="userCatalogs"
+    />
+
     <Account 
       v-if="currentPage == 'account'"
       :currentPage="currentPage"
@@ -64,6 +71,7 @@ import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
 import Home from './pages/Home.vue';
 import Account from './pages/Account.vue';
+import Watchlist from './pages/Watchlist.vue';
 
 
 
@@ -74,8 +82,8 @@ let currentPage = ref('login'); // Default to 'login' page
 const currentUserId = ref(null);
 const userCatalogs = ref([]);
 const userGenres = ref([]);
-const userWatchlist = ref([]);
-const userMoodHistory = ref([]); //this array has the imdb id of the movie or show(and all its details), but we can change this if one of the other ids is better, but imdb is the universal one that can link to both movie of the night or tmdb if needed.
+const userWatchlist = ref([]); // uses the Imdb Id that was added in the  '+' button on the title card
+const userMoodHistory = ref([]);
 
 const supabase = ref(createClient(supabaseUrl, supabaseAnonKey));
 

@@ -25,8 +25,8 @@
       </div>
       <div class="submit-button">
         <button @click="getRecommendations">Get Recommendations</button>
-        <button v-if="reccomendedShows != null" @click="homeState = 'reccomendations'">
-          See Last Reccomendations
+        <button v-if="recommendedShows != null" @click="homeState = 'recommendations'">
+          See Last Recommendations
         </button>
       </div>
     </div>
@@ -56,7 +56,7 @@ const props = defineProps({
 });
 
 const homeState = defineModel('home-state');
-const reccomendedShows = defineModel('reccomended-shows');
+const recommendedShows = defineModel('recommended-shows');
 
 const emojis = ref([
   { name: 'happy', fileName: 'happy.png' },
@@ -70,7 +70,7 @@ const emojiGenres = {
   happy: ['comedy', 'animation', 'family'],
   sad: ['drama', 'crime', 'reality', 'horror'],
   tired: ['documentary', 'history', 'family'],
-  love: ['romance'],
+  love: ['romance', 'drama'],
   neutral: ['action', 'adventure', 'fantasy', 'mystery', 'thriller', 'science fiction', 'comedy']
 };
 
@@ -118,8 +118,8 @@ async function getRecommendations() {
   }
   console.log("showss", showss);
   isLoading.value = false;
-  reccomendedShows.value = showss.shows;
-  homeState.value = 'reccomendations';
+  recommendedShows.value = showss.shows;
+  homeState.value = 'recommendations';
 }
 
 function getGenreListFromMoods() {
@@ -260,6 +260,7 @@ function getGenreListFromMoods() {
 
 .submit-button button {
   padding: 1rem 2.5rem;
+  margin: 8px;
   font-size: 1.1rem;
   font-weight: bold;
   color: white;
@@ -274,18 +275,6 @@ function getGenreListFromMoods() {
 .submit-button button:hover {
   background-color: #624FAD;
   /* Darker purple */
-}
-
-.gradient-title {
-  /* Define the gradient from left (to right) with two purple shades */
-  background: linear-gradient(to right, #735CD1, #d1c4f8);
-
-  /* Clip the background to the shape of the text */
-  -webkit-background-clip: text;
-  background-clip: text;
-
-  /* Make the text color transparent so the background gradient is visible */
-  color: transparent;
 }
 </style>
 
