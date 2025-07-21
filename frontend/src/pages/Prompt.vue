@@ -21,6 +21,7 @@
           'emoji-selected': mood.includes(emoji.name)
         }">
           <img :src="getImageUrl(emoji.fileName)" :alt="emoji.name" />
+          <span class="emoji-label">{{ emoji.name.charAt(0).toUpperCase() + emoji.name.slice(1) }}</span>
         </span>
       </div>
       <div class="submit-button">
@@ -62,17 +63,32 @@ const emojis = ref([
   { name: 'happy', fileName: 'happy.png' },
   { name: 'sad', fileName: 'sad.png' },
   { name: 'tired', fileName: 'tired.png' },
-  { name: 'love', fileName: 'love.png' },
-  { name: 'neutral', fileName: 'neutral.png' }
+  { name: 'loving', fileName: 'love.png' },
+  { name: 'silly', fileName: 'silly.png' },
+  { name: 'frightened', fileName: 'frightened.png' },
+  { name: 'meh', fileName: 'neutral.png' },
+  { name: 'sneaky', fileName: 'mysterious.png' },
+  { name: 'amused', fileName: 'amused.png' },
+  { name: 'stressed', fileName: 'stressed.png' },
+  { name: 'crazy', fileName: 'crazy.png' },
+  { name: 'angry', fileName: 'angry.png' }
 ]);
 
 const emojiGenres = {
   happy: ['comedy', 'animation', 'family'],
-  sad: ['drama', 'crime', 'reality', 'horror'],
-  tired: ['documentary', 'history', 'family'],
-  love: ['romance', 'drama'],
-  neutral: ['action', 'adventure', 'fantasy', 'mystery', 'thriller', 'science fiction', 'comedy']
+  sad: ['drama', 'crime'],
+  tired: ['family', 'animation', 'comedy'],
+  loving: ['romance', 'drama'],
+  silly: ['comedy', 'animation', 'adventure'],
+  frightened: ['horror', 'thriller', 'mystery'],
+  meh: ['action', 'drama', 'mystery', 'scifi'],
+  sneaky: ['mystery', 'thriller', 'crime'],
+  amused: ['comedy', 'family', 'adventure'],
+  stressed: ['drama', 'history', 'scifi'],
+  crazy: ['action', 'adventure', 'fantasy', 'scifi', 'comedy'],
+  angry: ['action', 'thriller', 'crime', 'drama']
 };
+
 
 watch(moodTranscript, (newTranscript, oldTranscript) => {
   if (newTranscript != '') {
@@ -227,6 +243,40 @@ function getGenreListFromMoods() {
   justify-content: center;
   gap: 1.5rem;
   flex-wrap: wrap;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.emoji {
+  position: relative;
+  display: inline-block; 
+}
+
+
+.emoji-label {
+  
+  position: absolute;
+  bottom: 115%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background-color: #2d3748;
+  color: #e2e8f0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap; 
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+}
+.emoji:hover .emoji-label {
+  opacity: 1;
+  visibility: visible;
 }
 
 .emoji img {
@@ -277,6 +327,215 @@ function getGenreListFromMoods() {
   /* Darker purple */
 }
 </style>
+
+<!-- /* .home-mood-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.home-mood-container h2 {
+  font-size: 1.75rem;
+  color: #cbd5e0;
+  margin-bottom: 1.5rem;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  background-color: #1a202c;
+  border: 2px solid #4a5568;
+  color: #e2e8f0;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.input-container input:focus {
+  outline: none;
+  border-color: #42b983;
+}
+
+.disabled-input {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.emoji-container {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.emoji img {
+  height: 60px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.emoji:hover img {
+  transform: scale(1.1);
+}
+
+.emoji-selected img {
+  transform: scale(1.2);
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(66, 185, 131, 0.7);
+}
+
+.disabled-emoji img {
+  filter: grayscale(80%) opacity(50%);
+  cursor: not-allowed;
+}
+
+.disabled-emoji:hover img {
+  transform: none;
+}
+
+.submit-button {
+  margin-top: 2.5rem;
+}
+
+.submit-button button {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  background-color: #42b983;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button button:hover {
+  background-color: #3aa873;
+} */ -->
+
+<!-- <style scoped>
+/* Scoped styles ensure these only apply to the Home.vue component  LIGHT THEME */
+.home {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2.5rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.home-header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #2c3e50;
+  /* Match navbar color */
+  margin: 0;
+}
+
+.home-header p {
+  font-size: 1.25rem;
+  color: #7f8c8d;
+  margin-top: 0.5rem;
+}
+
+
+/* --- Mood Selection Area --- */
+.home-mood-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.home-mood-container h2 {
+  font-size: 1.75rem;
+  color: #34495e;
+  margin-bottom: 1.5rem;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border: 2px solid #dfe4ea;
+  border-radius: 8px;
+  box-sizing: border-box;
+  /* Important for padding */
+  transition: border-color 0.3s;
+}
+
+.input-container input:focus {
+  outline: none;
+  border-color: #42b983;
+}
+
+.disabled-input {
+  pointer-events: none;
+}
+
+
+.emoji-container {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.emoji img {
+  height: 60px;
+  /* Slightly larger */
+  cursor: pointer;
+}
+
+.emoji-selected {
+  transform: scale(1.2);
+  transition: transform 0.1s ease-in-out;
+}
+
+.disabled-emoji img {
+  filter: grayscale(80%);
+  transition: none;
+  height: 60px;
+}
+
+.disabled-emoji img:hover {
+  transform: none;
+}
+
+.disabled-emoji:hover {
+  transform: none;
+}
+
+.submit-button {
+  margin-top: 2.5rem;
+}
+
+.submit-button button {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  background-color: #42b983;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button button:hover {
+  background-color: #3aa873;
+}
+</style> -->
 
 <!-- /* .home-mood-container {
   max-width: 800px;

@@ -1,13 +1,13 @@
 <template>
   <!-- Nav Bar -->
-  <nav class="navbar" v-if="currentPage !== 'login' && currentPage !== 'register'">
+  <nav class="navbar" v-if="currentPage !== 'landing' && currentPage !== 'login' && currentPage !== 'register'">
     <div class="navbar-left">
       <a href="/">
         <img src="./assets/images/moodstreamlogo/moodstream_logo.png" alt="Moodstream Logo" class="brand" />
       </a>
     </div>
     <div class="navbar-center">
-      <button class="nav-button">My Moods</button>
+      <button @click="currentPage = 'history'" class="nav-button">My Moods</button>
       <button @click="currentPage = 'watchlist'" class="nav-button">My Watchlist</button>
     </div>
     <div class="navbar-right">
@@ -16,6 +16,12 @@
 
     </div>
   </nav>
+  <!-- Landing Page -->
+  <Landing 
+  v-if="currentPage === 'landing'"
+  @go-to-login="currentPage = 'login'"
+  @go-to-register="currentPage = 'register'"
+/>
   
   <!-- Login/Register area -->
   <div v-if="currentPage === 'login' || currentPage === 'register'" id="login-register">
@@ -38,6 +44,7 @@
   <div v-else id="main-page">
     <Home 
       v-if="currentPage == 'home'"
+      v-model:show-preferences-modal="showPreferencesModal" 
       :current-user-id="currentUserId"
       :supabase="supabase"
       :catalogs="userCatalogs"
@@ -49,6 +56,12 @@
       :current-user-id="currentUserId"
       :supabase="supabase"
       :catalogs="userCatalogs"
+    />
+
+    <History
+      v-if="currentPage == 'history'"
+      :current-user-id="currentUserId"
+      :supabase="supabase"
     />
 
     <Account 
@@ -67,16 +80,19 @@ import { ref, watch, onMounted } from 'vue';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseUrl, supabaseAnonKey, getUserInfo, logout } from './supabase.js';
 
+import Landing from './pages/Landing.vue';
 import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
 import Home from './pages/Home.vue';
 import Account from './pages/Account.vue';
 import Watchlist from './pages/Watchlist.vue';
+import History from './pages/History.vue';
 
 
 
 // --- State Management ---
-let currentPage = ref('login'); // Default to 'login' page
+let currentPage = ref('landing'); // Default to 'landing' page
+const showPreferencesModal = ref(false);
 
 // -- Ref variables --
 const currentUserId = ref(null);
@@ -96,16 +112,37 @@ onMounted(async () => {
     currentPage.value = 'home';
     currentUserId.value = session.user.id;
 
+    await fetchUserInfo();  //should this happen? 
+
     // console.log('Access token:', session.access_token);
-  } else {
-    console.log('No active session.');
-    currentPage.value = 'login';
-  }
+   } //else {
+  //   console.log('No active session.');
+  //   currentPage.value = 'login';
+  // }
 })
+
+async function fetchUserInfo() {
+  if (currentUserId.value) {
+    [userCatalogs.value, userGenres.value] = await getUserInfo(supabase.value, currentUserId.value);
+    console.log('Fetched user info:', currentUserId.value, userCatalogs.value, userGenres.value);
+    if (userCatalogs.value.length === 0) {
+      showPreferencesModal.value = true;
+    } else {
+      showPreferencesModal.value = false;
+    }
+  } 
+}
+
+watch(showPreferencesModal, (isVisible) => {
+  if (!isVisible) {
+    fetchUserInfo();
+  }
+});
 
 watch(currentPage, async (newPage, oldPage) => {
   if (newPage == 'home' && (oldPage == 'register' || oldPage == 'login')) {
-    [userCatalogs.value, userGenres.value] = await getUserInfo(supabase.value, currentUserId.value);
+    //[userCatalogs.value, userGenres.value] = await getUserInfo(supabase.value, currentUserId.value);
+    await fetchUserInfo();
     console.log('currentuserstuff:', currentUserId.value, userCatalogs.value, userGenres.value);
   }
 });

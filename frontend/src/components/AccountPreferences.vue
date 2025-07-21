@@ -67,8 +67,8 @@ const props = defineProps({
   }
 });
 
-// A computed property to easily check the current mode
 const isAccountPage = computed(() => props.currentPage === 'account');
+const emit = defineEmits(['preferences-saved']);
 
 // --- Local State for UI ---
 const catalogs = ref([
@@ -169,14 +169,12 @@ async function handleSubmit() {
 
   try {
     if (isAccountPage.value) {
-      // On the account page, use the "delete-then-insert" logic
       await updateUserPreferences(props.currentUserId, selectedCatalogs, selectedGenres, props.supabase);
       alert('Preferences updated successfully!');
     } else {
-      // On the initial setup page, use the simple "insert-only" logic
       await saveInitialPreferences(props.currentUserId, selectedCatalogs, selectedGenres, props.supabase);
       alert('Preferences saved!');
-      // You might want to emit an event here to tell the parent component to move to the next step
+      emit('preferences-saved');
     }
   } catch (error) {
     console.error('Failed to save preferences:', error);

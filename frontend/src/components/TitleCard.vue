@@ -478,10 +478,11 @@ const full_catalog = ref([
   padding: 0.5rem 1rem;
   margin: 8px;
   border-radius: 8px;
-  transition: background-color 0.2s;
+  transition: transform 0.2s ease-in-out;
 }
 .streaming-service-logo-link:hover {
-  background-color: #c0b5ee;
+  /* background-color: #d7d0f2; */
+  transform: scale(1.15);
 }
 .streaming-service-logo {
   height: 30px;

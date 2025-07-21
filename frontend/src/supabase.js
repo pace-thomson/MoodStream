@@ -55,7 +55,7 @@ export async function getUserWatchlist(supabaseClient, user_id) {
 export async function getUserMoodHistory(supabaseClient, user_id) {
     const { data, error } = await supabaseClient
       .from('user_history')
-      .select('id, mood, transcript, created_at')
+      .select('id, moods, transcript, created_at')
       .eq('user_id', user_id)
       .order('created_at', { ascending: false });
   
