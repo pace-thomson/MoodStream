@@ -133,8 +133,8 @@ async function fetchUserInfo() {
   } 
 }
 
-watch(showPreferencesModal, (isVisible) => {
-  if (!isVisible) {
+watch(showPreferencesModal, (isVisible, wasVisible) => {
+  if (!isVisible && wasVisible) {
     fetchUserInfo();
   }
 });

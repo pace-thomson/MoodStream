@@ -83,7 +83,7 @@ const emojiGenres = {
   frightened: ['horror', 'thriller', 'mystery'],
   meh: ['action', 'drama', 'mystery', 'scifi'],
   sneaky: ['mystery', 'thriller', 'crime'],
-  amused: ['comedy', 'family', 'adventure'],
+  amused: ['comedy', 'animation'],
   stressed: ['drama', 'history', 'scifi'],
   crazy: ['action', 'adventure', 'fantasy', 'scifi', 'comedy'],
   angry: ['action', 'thriller', 'crime', 'drama']
@@ -134,19 +134,25 @@ async function getRecommendations() {
   }
   console.log("showss", showss);
   isLoading.value = false;
-  recommendedShows.value = showss;
+  recommendedShows.value = showss.shows;
   homeState.value = 'recommendations';
 }
 
 function getGenreListFromMoods() {
   let genreArray = [];
-  console.log("genreArray", genreArray);
+  console.log("genreArray:", genreArray);
   for (let i = 0; i < mood.value.length; i++) {
     let moodGenres = emojiGenres[mood.value[i]];
     genreArray = genreArray.concat(moodGenres);
   }
-  console.log("genreArray", genreArray);
-  return genreArray;
+  let newArray = [];
+  for (let i = 0; i < genreArray.length; i++) {
+    if (!newArray.includes(genreArray[i])) {
+      newArray.push(genreArray[i]);
+    }
+  }
+  console.log("new genreArray:", newArray);
+  return newArray;
 }
 </script>
 
