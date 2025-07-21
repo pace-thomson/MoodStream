@@ -57,37 +57,58 @@ app.listen(PORT, () => {
 
 
 
-// async function tester() {
-//     // const data = await availabilityApiHandler.client.showsApi.searchShowsByFiltersRaw({
-//     //     title: "The Dark Knight",
-//     //     country: 'us',
+async function tester() {
+    // const data = await availabilityApiHandler.client.showsApi.searchShowsByFiltersRaw({
+    //     title: "The Dark Knight",
+    //     country: 'us',
         
-//     // });
+    // });
 
-//     let catalogs = ['netflix', 'disney', 'peacock']
+    let catalogs = ['netflix', 'disney', 'peacock'];
 
-//     let fixed = addDotSubscription(catalogs);
+    let genres = ['action']
 
-//     console.log(fixed);
+    let fixed = availabilityApiHandler.getFixedSubscriptionList(catalogs);
 
-//     const filter = {
-//         country: "us",
-//         catalogs: fixed,
-//         showType: "movie",
-//         orderBy: "popularity_alltime",
-//     };
+    console.log(fixed);
 
-//     const idk = await availabilityApiHandler.client.showsApi.searchShowsByFilters(filter);
+    let filter = {
+        country: "us",
+        catalogs: fixed,
+        showType: "movie",
+        genres: genres,
+        genresRelation: 'and',
+        orderBy: "popularity_alltime",
+    };
 
-//     // idk['shows'].forEach((show) => {
-//     //     console.log('title: ', show.title);
-//     //     console.log("show.streamingOptions", show.streamingOptions);
-//     // })
+    const idk = await availabilityApiHandler.client.showsApi.searchShowsByFilters(filter);
 
-//     console.log("idk['shows'][0]", idk["shows"][0].streamingOptions);
+    filter = {
+        country: "us",
+        catalogs: fixed,
+        showType: "movie",
+        genres: genres,
+        genresRelation: 'or',
+        orderBy: "popularity_1year",
+    };
+    const two = await availabilityApiHandler.client.showsApi.searchShowsByFilters(filter);
 
-    
-// }
+    let both = idk['shows'].concat(two['shows']);
+
+    console.log('both.length', both.length);
+
+    let titles = [];
+    both.forEach(element => {
+        let dupe = titles.includes(element.title)
+        if (dupe) {
+            console.log('duplicate detected');
+        }
+        else {
+            titles.push(element.title);
+        }
+    })
+    console.log('title', titles);
+}
 
 // tester();
 

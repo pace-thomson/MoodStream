@@ -13,7 +13,10 @@ export class MovieNight {
 
             console.log('filter', filter);
     
-            return await this.client.showsApi.searchShowsByFilters(filter);
+            const res1 = await this.client.showsApi.searchShowsByFilters(filter);
+            filter.orderBy = "popularity_1year";
+            const res2 = await this.client.showsApi.searchShowsByFilters(filter);
+            return this.populateShowsList(res1.shows, res2.shows);
         }
         catch (error) {
             console.log("error", error);
@@ -27,6 +30,7 @@ export class MovieNight {
                 catalogs: this.getFixedSubscriptionList(catalogs),
                 genres: genres,
                 genresRelation: 'or',
+                outputLanguage: 'en',
                 orderBy: "popularity_alltime",
             };
     
@@ -46,6 +50,7 @@ export class MovieNight {
             catalogs: this.getFixedSubscriptionList(catalogs),
             genres: aiResponseObj.genres,
             genresRelation: 'or',
+            outputLanguage: 'en',
             orderBy: "popularity_alltime",
         };
 
@@ -62,6 +67,21 @@ export class MovieNight {
         }
 
         return filter;
+    }
+
+    populateShowsList(res1, res2) {
+        let fullList = [];
+        res1.forEach(element => {
+            if (!fullList.includes(element)) {
+                fullList.push(element);
+            }
+        });
+        res2.forEach(element => {
+            if (!fullList.includes(element)) {
+                fullList.push(element);
+            }
+        });
+        return fullList;
     }
 
     getFixedSubscriptionList(catalogs) {

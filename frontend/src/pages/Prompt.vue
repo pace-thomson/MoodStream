@@ -134,7 +134,7 @@ async function getRecommendations() {
   }
   console.log("showss", showss);
   isLoading.value = false;
-  recommendedShows.value = showss.shows;
+  recommendedShows.value = showss;
   homeState.value = 'recommendations';
 }
 
