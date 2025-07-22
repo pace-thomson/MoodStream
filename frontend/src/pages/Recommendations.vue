@@ -68,35 +68,3 @@ const props = defineProps({
   background-color: #735CD1;
 }
 </style>
-
-
-
-
-
-<!-- This is working version V1
-  
-  <template>
-  <h1>Your Generated Recommendations</h1>
-  <button @click="homeState = 'prompt'">Restart Recommendations</button>
-
-  <TitleCard :recommendedShows="recommendedShows" :catalogs="catalogs" />
-</template>
-
-<script setup>
-import { SupabaseClient } from '@supabase/supabase-js';
-import TitleCard from '../components/TitleCard.vue';
-
-const homeState = defineModel('home-state');
-
-const props = defineProps({
-  supabase: SupabaseClient,
-  currentUserId: String,
-  catalogs: Array,
-  recommendedShows: Array
-});
-</script>
-
-
-<style scoped>
-
-</style> -->
