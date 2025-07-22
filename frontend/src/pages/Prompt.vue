@@ -34,6 +34,7 @@
     </div>
     <div v-if="isLoading">
       <h1>I'M LOADING HEHE</h1>
+      <Popcorn />
     </div>
   </section>
 </template>
@@ -42,6 +43,7 @@
 import { ref, watch } from 'vue';
 import { getShowsWithGenres, getShowsWithPrompt } from '../serverCaller.js'
 import { SupabaseClient } from '@supabase/supabase-js';
+import Popcorn from '@/components/Popcorn.vue';
 
 
 const emojisOrPrompt = ref('either');
