@@ -32,6 +32,11 @@ export const extractPreferenceTool = [{
       "maxYear": {
         "type": "integer",
         "default": 2100
+      },
+      "genresRelation": {
+        "type": "string",
+        "enum": ["and", "or"],
+        "description": "Use 'and' if the genres are tightly related, or 'or' for broader matches"
       }
     },
     "required": ["mood", "genres", "showType", "minYear", "maxYear"],

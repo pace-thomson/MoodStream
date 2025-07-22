@@ -74,19 +74,34 @@ const emojis = ref([
   { name: 'angry', fileName: 'angry.png' }
 ]);
 
+// const emojiGenres = {
+//   happy: ['comedy', 'animation', 'family'],
+//   sad: ['drama', 'crime'],
+//   tired: ['family', 'animation', 'comedy'],
+//   loving: ['romance', 'drama'],
+//   silly: ['comedy', 'animation', 'adventure'],
+//   frightened: ['horror', 'thriller', 'mystery'],
+//   meh: ['action', 'drama', 'mystery', 'scifi'],
+//   sneaky: ['mystery', 'thriller', 'crime'],
+//   amused: ['comedy', 'animation'],
+//   stressed: ['drama', 'history', 'scifi'],
+//   crazy: ['action', 'adventure', 'fantasy', 'scifi', 'comedy'],
+//   angry: ['action', 'thriller', 'crime', 'drama']
+// };
+
 const emojiGenres = {
-  happy: ['comedy', 'animation', 'family'],
-  sad: ['drama', 'crime'],
-  tired: ['family', 'animation', 'comedy'],
-  loving: ['romance', 'drama'],
-  silly: ['comedy', 'animation', 'adventure'],
-  frightened: ['horror', 'thriller', 'mystery'],
-  meh: ['action', 'drama', 'mystery', 'scifi'],
-  sneaky: ['mystery', 'thriller', 'crime'],
-  amused: ['comedy', 'animation'],
-  stressed: ['drama', 'history', 'scifi'],
-  crazy: ['action', 'adventure', 'fantasy', 'scifi', 'comedy'],
-  angry: ['action', 'thriller', 'crime', 'drama']
+  happy: ['family'],
+  sad: ['drama'],
+  tired: ['fantasy'],
+  loving: ['romance'],
+  silly: ['animation'],
+  frightened: ['horror'],
+  meh: ['action', 'comedy', 'thriller', 'scifi', 'romance', 'drama', 'adventure'],
+  sneaky: ['mystery', 'thriller'],
+  amused: ['comedy'],
+  stressed: ['drama'],
+  crazy: ['action', 'adventure'],
+  angry: ['crime']
 };
 
 
@@ -134,7 +149,7 @@ async function getRecommendations() {
   }
   console.log("showss", showss);
   isLoading.value = false;
-  recommendedShows.value = showss.shows;
+  recommendedShows.value = showss;
   homeState.value = 'recommendations';
 }
 

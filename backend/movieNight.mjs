@@ -10,8 +10,35 @@ export class MovieNight {
         try {
             
             let filter = this.getFilter(aiResponseObj, catalogs);
-
             console.log('filter', filter);
+
+            // console.log('genrerelation', aiResponseObj.genreRelation);
+
+            let shows = await this.makeTwoCalls(filter, aiResponseObj.genresRelation);
+
+            if (shows.length < 30 && aiResponseObj.genreRelation == 'and') {
+                shows.push(await this.makeTwoCalls(filter, "or"));
+            }
+
+            return shows;
+        }
+        catch (error) {
+            console.log("error", error);
+        }
+    }
+
+    async getShowsUsingGenres(genres, catalogs) {
+        try {
+            let genres_relation = 'and';
+            if (genres.length > 3) genres_relation = 'or';
+            let filter = {
+                country: "us",
+                catalogs: this.getFixedSubscriptionList(catalogs),
+                genres: genres,
+                genresRelation: genres_relation,
+                outputLanguage: 'en',
+                orderBy: "popularity_alltime",
+            };
     
             const res1 = await this.client.showsApi.searchShowsByFilters(filter);
             filter.orderBy = "popularity_1year";
@@ -23,28 +50,16 @@ export class MovieNight {
         }
     }
 
-    async getShowsUsingGenres(genres, catalogs) {
-        try {
-            let filter = {
-                country: "us",
-                catalogs: this.getFixedSubscriptionList(catalogs),
-                genres: genres,
-                genresRelation: 'or',
-                outputLanguage: 'en',
-                orderBy: "popularity_alltime",
-            };
-    
-            return await this.client.showsApi.searchShowsByFilters(filter);
-        }
-        catch (error) {
-            console.log("error", error);
-        }
+    async makeTwoCalls(filter, genres_relation) {
+        filter.genresRelation = genres_relation;
+        const res1 = this.client.showsApi.searchShowsByFilters(filter);
+        filter.orderBy = "popularity_1year";
+        const res2 = this.client.showsApi.searchShowsByFilters(filter);
+        const reses = await Promise.all([res1, res2]);
+        return this.populateShowsList(reses[0].shows, reses[1].shows);
     }
 
-
-
     getFilter(aiResponseObj, catalogs) {
-
         const filter = {
             country: "us",
             catalogs: this.getFixedSubscriptionList(catalogs),
@@ -53,31 +68,36 @@ export class MovieNight {
             outputLanguage: 'en',
             orderBy: "popularity_alltime",
         };
-
         if (aiResponseObj.showType !== "either") {
             filter.showType = aiResponseObj.showType;
         }
-
         if (aiResponseObj.minYear != 0) {
             filter.yearMin = aiResponseObj.minYear;
         }
-
         if (aiResponseObj.maxYear != 2100) {
             filter.yearMax = aiResponseObj.maxYear;
         }
-
         return filter;
+    }
+
+    determineShowsLengths(shows1, shows2) {
+        if ((shows1.shows.length + shows2.shows.length ) < 40) {
+            return false;
+        } else return true;
     }
 
     populateShowsList(res1, res2) {
         let fullList = [];
+        let idList = [];
         res1.forEach(element => {
-            if (!fullList.includes(element)) {
+            if (!idList.includes(element.id)) {
+                idList.push(element.id);
                 fullList.push(element);
             }
         });
         res2.forEach(element => {
-            if (!fullList.includes(element)) {
+            if (!idList.includes(element.id)) {
+                idList.push(element.id);
                 fullList.push(element);
             }
         });

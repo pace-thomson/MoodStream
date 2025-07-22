@@ -45,7 +45,7 @@ app.post('/recommend', express.json(), async (req, res) => {
         showsList = await getShowsWithGenres(data);
     }
 
-    console.log("showsList.length:", showsList.length);
+    // console.log("showsList.length:", showsList.length);
     
     res.status(200).json(showsList);
 });
