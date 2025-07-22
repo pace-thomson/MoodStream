@@ -7,6 +7,7 @@
     </div>
     <div class="home-mood-container">
       <h2>How are you feeling?</h2>
+      <p>I'll recommend both movies and shows, unless you tell me what you'd prefer.</p>
       <div class="input-container">
         <input :class="{ 'disabled-input': emojisOrPrompt == 'emojis' }" type="text" v-model="moodTranscript"
           placeholder="I'm feeling..." />

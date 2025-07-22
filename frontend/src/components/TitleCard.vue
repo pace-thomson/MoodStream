@@ -54,7 +54,7 @@
                 <strong>Director:</strong> {{ formatDirectors(selectedShow.directors) }}
               </p>
               <p v-if="selectedShow.cast && selectedShow.cast.length > 0">
-                <strong>Cast:</strong> 
+                <strong>Cast: </strong> 
                 <span v-for="(actor, index) in selectedShow.cast.slice(0, 4)" :key="index">
                   {{ actor }}<span v-if="index < selectedShow.cast.slice(0, 4).length - 1">, </span>
                 </span>
