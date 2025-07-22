@@ -8,18 +8,13 @@ export class MovieNight {
 
     async getShowsUsingPrompt(aiResponseObj, catalogs) {
         try {
-            
             let filter = this.getFilter(aiResponseObj, catalogs);
-            console.log('filter', filter);
-
-            // console.log('genrerelation', aiResponseObj.genreRelation);
-
             let shows = await this.makeTwoCalls(filter, aiResponseObj.genresRelation);
 
-            if (shows.length < 30 && aiResponseObj.genreRelation == 'and') {
-                shows.push(await this.makeTwoCalls(filter, "or"));
+            if (shows.length < 30 && aiResponseObj.genresRelation == 'and') {
+                console.log('making extra calls with "or"');
+                shows = shows.concat(await this.makeTwoCalls(filter, "or"));
             }
-
             return shows;
         }
         catch (error) {
@@ -39,11 +34,13 @@ export class MovieNight {
                 outputLanguage: 'en',
                 orderBy: "popularity_alltime",
             };
-    
-            const res1 = await this.client.showsApi.searchShowsByFilters(filter);
-            filter.orderBy = "popularity_1year";
-            const res2 = await this.client.showsApi.searchShowsByFilters(filter);
-            return this.populateShowsList(res1.shows, res2.shows);
+
+            let shows = await this.makeTwoCalls(filter, genres_relation);
+            if (shows.length < 30 && genres_relation == 'and') {
+                console.log('making extra calls with "or"');
+                shows = shows.concat(await this.makeTwoCalls(filter, "or"));
+            }
+            return shows;
         }
         catch (error) {
             console.log("error", error);
@@ -52,6 +49,7 @@ export class MovieNight {
 
     async makeTwoCalls(filter, genres_relation) {
         filter.genresRelation = genres_relation;
+        console.log('filter', filter);
         const res1 = this.client.showsApi.searchShowsByFilters(filter);
         filter.orderBy = "popularity_1year";
         const res2 = this.client.showsApi.searchShowsByFilters(filter);
@@ -64,7 +62,6 @@ export class MovieNight {
             country: "us",
             catalogs: this.getFixedSubscriptionList(catalogs),
             genres: aiResponseObj.genres,
-            genresRelation: 'or',
             outputLanguage: 'en',
             orderBy: "popularity_alltime",
         };
