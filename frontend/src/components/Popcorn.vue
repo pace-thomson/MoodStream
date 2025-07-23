@@ -1,100 +1,94 @@
 <template>
   <!-- 
-    This container is a fixed overlay, covering the entire screen.
-    The z-index makes it sit on top of other content.
+    This container is a fixed overlay for the loading screen.
+    It has a semi-transparent background and a loading message.
   -->
-  <div class="popcorn-container">
+  <div class="loading-container">
+    <!-- This div now displays the 'quote' prop instead of static text. -->
+    <div class="loading-text">"{{ quote }}"</div>
     <!--
-      The v-for directive still renders a div for each popcorn object.
-      The style binding now only sets the 'left' and 'animation' properties,
-      as the rest is handled by the CSS classes.
+      We render a fixed number of kernels. CSS will handle their animation loop.
+      The :style attribute assigns a unique animation delay and horizontal
+      position to each kernel, creating a random effect.
     -->
     <div
-      v-for="popcorn in popcorns"
-      :key="popcorn.id"
+      v-for="i in 10"
+      :key="i"
       class="popcorn-kernel"
-      :style="popcorn.style"
+      :style="getKernelStyle()"
     ></div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+/**
+ * To use this component with dynamic quotes:
+ * 1. In the parent component, create a ref to hold the current quote:
+ * const currentQuote = ref('');
+ * * 2. Before showing the loading screen, pick a random quote and update the ref:
+ * const quotes = ["Quote 1", "Quote 2", ...];
+ * currentQuote.value = quotes[Math.floor(Math.random() * quotes.length)];
+ * * 3. Pass the quote as a prop in your template:
+ * <PopcornAnimation v-if="isLoading" :quote="currentQuote" />
+ */
 
-// A reactive array to hold all the popcorn objects currently on screen.
-const popcorns = ref([]);
-
-// A counter to ensure each popcorn has a unique ID for the :key attribute.
-let popcornIdCounter = 0;
-
-// To store the interval ID, so we can clear it later to prevent memory leaks.
-let popcornInterval = null;
-
-// The duration of the animation in seconds.
-const ANIMATION_DURATION_S = 5;
+// Define the props this component accepts.
+// We expect a 'quote' of type String, and we provide a default value.
+defineProps({
+  quote: {
+    type: String,
+    default: 'Loading...'
+  }
+});
 
 /**
- * Creates a single popcorn kernel object and adds it to our reactive array.
+ * Generates a unique style for each kernel.
+ * This function provides a random horizontal starting position and a random
+ * animation delay. This makes the looping animation look less repetitive.
  */
-function createPopcorn() {
-  const id = popcornIdCounter++;
-  
-  // Generate a random horizontal position for the new kernel.
-  // The kernel width is now fixed at 35px by the CSS.
-  const left = Math.random() * (window.innerWidth - 35);
-
-  // Create the new popcorn object. Note that width, height, and top are
-  // now controlled by the CSS classes and @keyframes.
-  const newPopcorn = {
-    id: id,
-    style: {
-      left: `${left}px`,
-      // The animation property is still set dynamically to control the duration.
-      animation: `pop ${ANIMATION_DURATION_S}s linear forwards`,
-    },
+function getKernelStyle() {
+  const left = Math.random() * 100; // Horizontal position in %
+  const delay = Math.random() * 5;  // Animation delay in seconds
+  return {
+    left: `${left}vw`,
+    animationDelay: `${delay}s`,
   };
-
-  // Add the new object to our array. Vue will automatically render a new div.
-  popcorns.value.push(newPopcorn);
-
-  // Set a timeout to remove this specific popcorn kernel from the array
-  // after its animation is complete.
-  setTimeout(() => {
-    popcorns.value = popcorns.value.filter(p => p.id !== id);
-  }, ANIMATION_DURATION_S * 1000);
 }
-
-// onMounted is a Vue lifecycle hook that runs after the component is added to the DOM.
-onMounted(() => {
-  // Create a new popcorn kernel every second.
-  popcornInterval = setInterval(createPopcorn, 1000);
-});
-
-// onUnmounted is a lifecycle hook that runs just before the component is removed.
-onUnmounted(() => {
-  clearInterval(popcornInterval);
-});
 </script>
 
 <style scoped>
 /*
-  The container is now a fixed overlay that covers the entire viewport.
-  It blocks mouse events to the content behind it. For a navbar to be
-  clickable, it must have a higher z-index (e.g., z-index: 1000).
+  The main container for the loading screen. It covers the entire viewport,
+  has a semi-transparent background, and uses z-index to sit on top of
+  other page content. Remember to give your navbar a higher z-index (e.g., 1001)
+  if you want it to be clickable.
 */
-.popcorn-container {
+.loading-container {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   overflow: hidden;
-  z-index: 999; /* Sits on top of content, blocking clicks. */
+  z-index: 999;
+  background-color: rgba(55, 59, 62, 0.85); /* Dark background with opacity */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+}
+
+.loading-text {
+  color: white;
+  font-size: 2rem;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
 /*
-  The kernel style is updated to use the background image and filter
-  you provided. Its initial vertical position is off-screen at the top.
+  The base style for the popcorn kernels.
 */
 .popcorn-kernel {
   width: 35px;
@@ -104,16 +98,109 @@ onUnmounted(() => {
   background: url(https://contentservice.mc.reyrey.net/image_v1.0.0/?id=c1627fe5-a7e7-5fb7-af61-374c65707e3c&637384707423276230);
   background-size: 100% 100%;
   filter: drop-shadow(0px 0px 5px rgba(0,0,0,.25));
+  
+  /* The animation is now set to loop infinitely. */
+  animation: pop 5s linear infinite;
 }
 
 /*
-  This is the new keyframe animation you provided.
-  It controls the scaling, rotation, and vertical movement of the kernel.
+  The keyframe animation remains the same, controlling the "pop" and fall.
+  Because the animation is infinite, each kernel will repeat this cycle.
 */
 @keyframes pop {
-  0% { transform: scale(.1); }
+  0% { transform: scale(.1); top: -50px; }
   3% { transform: scale(2); }
   6% { transform: scale(1); }
   100% { transform: scale(1) rotate(720deg); top: 105%; }
 }
 </style>
+
+
+
+<!-- <template>
+  
+  <div class="loading-container">
+    <div class="loading-text">Movie Quote blah blah blah...</div>
+   
+    <div
+      v-for="i in 10"
+      :key="i"
+      class="popcorn-kernel"
+      :style="getKernelStyle()"
+    ></div>
+  </div>
+</template>
+
+<script setup>
+/**
+ * Generates a unique style for each kernel.
+ * This function provides a random horizontal starting position and a random
+ * animation delay. This makes the looping animation look less repetitive.
+ */
+function getKernelStyle() {
+  const left = Math.random() * 100; // Horizontal position in %
+  const delay = Math.random() * 5;  // Animation delay in seconds
+  return {
+    left: `${left}vw`,
+    animationDelay: `${delay}s`,
+  };
+}
+</script>
+
+<style scoped>
+/*
+  The main container for the loading screen. It covers the entire viewport,
+  has a semi-transparent background, and uses z-index to sit on top of
+  other page content. Remember to give your navbar a higher z-index (e.g., 1001)
+  if you want it to be clickable.
+*/
+.loading-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: 999;
+  background-color: rgba(44, 62, 80, 0.85); /* Dark background with opacity */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-text {
+  color: white;
+  font-size: 2rem;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+/*
+  The base style for the popcorn kernels.
+*/
+.popcorn-kernel {
+  width: 35px;
+  height: 35px;
+  position: absolute;
+  top: -50px; /* Start above the screen */
+  background: url(https://contentservice.mc.reyrey.net/image_v1.0.0/?id=c1627fe5-a7e7-5fb7-af61-374c65707e3c&637384707423276230);
+  background-size: 100% 100%;
+  filter: drop-shadow(0px 0px 5px rgba(0,0,0,.25));
+  
+  /* The animation is now set to loop infinitely. */
+  animation: pop 5s linear infinite;
+}
+
+/*
+  The keyframe animation remains the same, controlling the "pop" and fall.
+  Because the animation is infinite, each kernel will repeat this cycle.
+*/
+@keyframes pop {
+  0% { transform: scale(.1); top: -50px; }
+  3% { transform: scale(2); }
+  6% { transform: scale(1); }
+  100% { transform: scale(1) rotate(720deg); top: 105%; }
+}
+</style>
+ -->

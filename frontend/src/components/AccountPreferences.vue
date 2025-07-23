@@ -50,7 +50,7 @@
 </template>
     
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, inject } from 'vue';
 // You'll need to import all necessary functions from your supabase.js file
 import { saveInitialPreferences, updateUserPreferences } from '../supabase.js';
 import { SupabaseClient } from '@supabase/supabase-js';
@@ -69,6 +69,7 @@ const props = defineProps({
 
 const isAccountPage = computed(() => props.currentPage === 'account');
 const emit = defineEmits(['preferences-saved']);
+const showAlert = inject('showAlert');
 
 // --- Local State for UI ---
 const catalogs = ref([
@@ -145,7 +146,7 @@ async function fetchUserPreferences() {
     });
   } catch (error) {
     console.error('Error fetching user preferences:', error.message);
-    alert('Could not load your preferences.');
+    showAlert('Could not load your preferences.');
   }
 }
   
@@ -170,15 +171,15 @@ async function handleSubmit() {
   try {
     if (isAccountPage.value) {
       await updateUserPreferences(props.currentUserId, selectedCatalogs, selectedGenres, props.supabase);
-      alert('Preferences updated successfully!');
+      showAlert('Preferences updated successfully!');
     } else {
       await saveInitialPreferences(props.currentUserId, selectedCatalogs, selectedGenres, props.supabase);
-      alert('Preferences saved!');
+      showAlert('Preferences saved!');
       emit('preferences-saved');
     }
   } catch (error) {
     console.error('Failed to save preferences:', error);
-    alert('There was an error saving your preferences.');
+    showAlert('There was an error saving your preferences.');
   }
 }
 </script>

@@ -40,12 +40,12 @@ async function handleRegister() {
 
     if (profileError) throw profileError;
 
-    alert('Registration successful! Please check your email for verification.');
+    showAlert('Registration successful! Please check your email for verification.');
     console.log('Registered user:', authData.user);
     currentUserId.value = authData.user.id;
 
   } catch (error) {
-    alert(error.message);
+    showAlert(error.message);
     console.error('Error during registration:', error);
   }
 }

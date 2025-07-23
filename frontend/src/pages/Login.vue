@@ -31,7 +31,7 @@ async function handleLogin() {
     currentPage.value = 'home';
     
   } catch (error) {
-    alert(error.message);
+    showAlert(error.message);
     console.error('Error logging in:', error);
   }
 }

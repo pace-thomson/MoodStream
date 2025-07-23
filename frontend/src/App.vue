@@ -1,4 +1,12 @@
 <template>
+
+  <CustomAlert 
+      v-if="alertIsVisible"
+      :message="alertMessage"
+      :type="alertType"
+      @close="hideAlert" 
+  />
+
   <!-- Nav Bar -->
   <nav class="navbar" v-if="currentPage !== 'landing' && currentPage !== 'login' && currentPage !== 'register'">
     <div class="navbar-left">
@@ -76,10 +84,11 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, provide } from 'vue';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseUrl, supabaseAnonKey, getUserInfo, logout } from './supabase.js';
 
+import CustomAlert from './components/CustomAlert.vue';
 import Landing from './pages/Landing.vue';
 import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
@@ -99,6 +108,9 @@ const userCatalogs = ref([]);
 const userGenres = ref([]);
 const userWatchlist = ref([]); 
 const userMoodHistory = ref([]);
+const alertIsVisible = ref(false);
+const alertMessage = ref('');
+const alertType = ref('info'); // 'info', 'success', 'error'
 
 const supabase = ref(createClient(supabaseUrl, supabaseAnonKey));
 
@@ -154,6 +166,21 @@ async function handleLogout() {
     currentPage.value = 'login';
   }
 };
+
+// Function to SHOW the alert
+function showAlert(message, type = 'info') {
+  alertMessage.value = message;
+  alertType.value = type;
+  alertIsVisible.value = true;
+}
+
+// Function to HIDE the alert
+function hideAlert() {
+  alertIsVisible.value = false;
+}
+
+// Provide the showAlert function to all child components
+provide('showAlert', showAlert);
 
 </script>
 

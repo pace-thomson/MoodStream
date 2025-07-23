@@ -42,12 +42,17 @@
             class="modal-poster"
           >
           <div class="modal-header-info">
+            <!-- 
+              This is the new button. It reuses the existing style and calls the same function.
+              It's placed inside the header info section for correct positioning.
+            -->
+            <button class="add-watchlist-button modal-add-button" @click="addToWatchlist(selectedShow)">+</button>
+            
             <h1>{{ selectedShow.title }}</h1>
             
             <div class="modal-details-line">
               <span v-if="selectedShow.showType=='movie'" class="card-year">{{ selectedShow.releaseYear}}</span>
               <span v-if="selectedShow.showType=='series'" class="card-year">{{ selectedShow.firstAirYear }} - {{ selectedShow.lastAirYear || 'Present' }}</span>
-              <span>&bull;</span>
               <span class="modal-genres-inline">{{ formatGenres(selectedShow.genres) }}</span>
             </div>
 
@@ -91,7 +96,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, inject } from 'vue';
 import { addShowToWatchlist } from '../supabase.js';
 
 // --- Props ---
@@ -116,6 +121,7 @@ const props = defineProps({
 
 // --- State Management ---
 const selectedShow = ref(null);
+const showAlert = inject('showAlert');
 
 // --- Lifecycle Hook ---
 onMounted(() => {
@@ -189,12 +195,12 @@ async function addToWatchlist(show) {
 
   if (error) {
     if (error.message !== 'already_exists') {
-      alert(`Could not add ${show.title} to watchlist.`);
+      showAlert(`Could not add ${show.title} to watchlist.`);
     } else {
-      alert(`${show.title} is already in your watchlist!`);
+      showAlert(`${show.title} is already in your watchlist!`);
     }
   } else {
-    alert(`${show.title} was added to your watchlist!`);
+    showAlert(`${show.title} was added to your watchlist!`);
   }
 }
 
@@ -425,6 +431,8 @@ const full_catalog = ref([
   display: block;
 }
 .modal-header-info {
+  /* This is the first new style: it makes this div a positioning container */
+  position: relative;
   padding: 1.5rem 2rem;
 }
 .modal-header-info h1 {
@@ -454,6 +462,12 @@ const full_catalog = ref([
 }
 .modal-credits strong {
   color: #e2e8f0;
+}
+
+/* This is the second new style: it positions the button in the top right */
+.modal-add-button {
+  top: 1.5rem;
+  right: 2rem;
 }
 
 .modal-body {
