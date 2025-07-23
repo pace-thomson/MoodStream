@@ -123,14 +123,16 @@ function getImageUrl(fileName) {
 
 async function getRecommendations() {
   userSentBadPrompt.value = false;
-  const randomIndex = Math.floor(Math.random() * movieQuotes.length);
-  currentQuote.value = movieQuotes[randomIndex];
   isLoading.value = true;
 
   let showss;
-  let res = {thing: "idk"};
   if (emojisOrPrompt.value == 'prompt') {
-    res = await getShowsWithPrompt(moodTranscript.value, props.catalogs);
+    const res = await getShowsWithPrompt(moodTranscript.value, props.catalogs);
+    if (!res) {
+      userSentBadPrompt.value = true;
+      isLoading.value = false;
+      return;
+    }
     showss = res.shows;
     logNewHistory(res.mood);
   } else if (emojisOrPrompt.value == 'emojis') {
@@ -138,12 +140,13 @@ async function getRecommendations() {
     showss = await getShowsWithGenres(genres, props.catalogs);
     console.log('showss in emojis thing', showss);
   }
-  if (!showss || !res) {
+  if (!showss) {
     userSentBadPrompt.value = true;
     isLoading.value = false;
     return;
   }
-  console.log("showss", showss);
+  const randomIndex = Math.floor(Math.random() * movieQuotes.length);
+  currentQuote.value = movieQuotes[randomIndex];
   isLoading.value = false;
   recommendedShows.value = showss;
   homeState.value = 'recommendations';

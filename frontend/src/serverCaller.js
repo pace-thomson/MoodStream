@@ -16,7 +16,7 @@ export async function getShowsWithPrompt(prompt, catalogs) {
     }
     const response = await fetch(`${serverUrl}/recommend`, options);
 
-    if (response.status == 400) {
+    if (response.status != 200) {
         return null;
     }
 
