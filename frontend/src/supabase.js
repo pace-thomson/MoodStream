@@ -86,66 +86,85 @@ export async function saveInitialPreferences(userId, selectedCatalogs, selectedG
     if (genreError) throw genreError;
   }
 
-  export async function updateUserPreferences(userId, selectedCatalogs, selectedGenres, supabaseClient) {
+export async function updateUserPreferences(userId, selectedCatalogs, selectedGenres, supabaseClient) {
     // --- Update Catalogs ---
     // Step 1: Delete all existing catalog entries for this user.
     const { error: deleteCatalogError } = await supabaseClient
-      .from('user_catalogs')
-      .delete()
-      .eq('user_id', userId);
-    
+        .from('user_catalogs')
+        .delete()
+        .eq('user_id', userId);
+
     if (deleteCatalogError) throw deleteCatalogError;
-  
+
     // Step 2: Insert the new set of catalog preferences.
     if (selectedCatalogs.length > 0) {
-      const catalogInserts = selectedCatalogs.map(service => ({ user_id: userId, service }));
-      const { error: insertCatalogError } = await supabaseClient.from('user_catalogs').insert(catalogInserts);
-      if (insertCatalogError) throw insertCatalogError;
+        const catalogInserts = selectedCatalogs.map(service => ({ user_id: userId, service }));
+        const { error: insertCatalogError } = await supabaseClient.from('user_catalogs').insert(catalogInserts);
+        if (insertCatalogError) throw insertCatalogError;
     }
-  
+
     // --- Update Genres ---
     // Step 3: Delete all existing genre entries for this user.
     const { error: deleteGenreError } = await supabaseClient
-      .from('user_genres')
-      .delete()
-      .eq('user_id', userId);
-  
+        .from('user_genres')
+        .delete()
+        .eq('user_id', userId);
+
     if (deleteGenreError) throw deleteGenreError;
-  
+
     // Step 4: Insert the new set of genre preferences.
     if (selectedGenres.length > 0) {
-      const genreInserts = selectedGenres.map(genre => ({ user_id: userId, genre }));
-      const { error: insertGenreError } = await supabaseClient.from('user_genres').insert(genreInserts);
-      if (insertGenreError) throw insertGenreError;
+        const genreInserts = selectedGenres.map(genre => ({ user_id: userId, genre }));
+        const { error: insertGenreError } = await supabaseClient.from('user_genres').insert(genreInserts);
+        if (insertGenreError) throw insertGenreError;
     }
-  }
+}
 
 export async function addShowToWatchlist(supabaseClient, userId, show) {
     if (!supabaseClient || !userId || !show) {
-      console.error('Missing required data to add to watchlist.');
-      return { data: null, error: new Error('Missing user or show data.') };
+        console.error('Missing required data to add to watchlist.');
+        return { data: null, error: new Error('Missing user or show data.') };
     }
-  
+
     const showData = {
-      user_id: userId,          
-      id_imdb: show.imdbId,     
-      title: show.title,    
+        user_id: userId,          
+        id_imdb: show.imdbId,     
+        title: show.title,    
     };
-  
+
     const { data, error } = await supabaseClient
-      .from('user_watchlist')
-      .insert([showData])     
-  
+        .from('user_watchlist')
+        .insert([showData])     
+
     if (error) {
-      if (error.message.includes('duplicate key value violates unique constraint')) {
+        if (error.message.includes('duplicate key value violates unique constraint')) {
         console.log(`${show.title} is already in the watchlist.`);
         return { data: null, error: { message: 'already_exists' } };
-      }
-      console.error('Error adding to watchlist:', error.message);
+        }
+        console.error('Error adding to watchlist:', error.message);
     }
-  
+
     return { data, error };
-  }
+}
+
+export async function saveUserMood(supabaseClient, userId, transcript, mood_extracted) {
+
+    const moodRow = {
+        transcript: transcript,
+        user_id: userId,
+        mood: mood_extracted
+    };
+
+    const { data, error } = await supabaseClient
+        .from('user_history')
+        .insert(moodRow);
+
+    if (error) {
+        console.error('Insert error:', error);
+    }
+
+    return { data, error };
+}
   
 
 // export async function saveUserCatalogs(userId, selectedCatalogs) {

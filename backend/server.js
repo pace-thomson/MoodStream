@@ -17,12 +17,19 @@ async function getShowsWithPrompt(data) {
         return null;
     }
     const showList = await availabilityApiHandler.getShowsUsingPrompt(aiResponse, data.catalogs);
-    return showList;
+    const resObj = {
+        mood: aiResponse.mood_extracted,
+        shows: showList
+    }
+    return resObj;
 }
 
 async function getShowsWithGenres(data) {
     const showList = await availabilityApiHandler.getShowsUsingGenres(data.genres, data.catalogs);
-    return showList;
+    const resObj = {
+        shows: showList
+    }
+    return resObj;
 }
 
 
@@ -35,19 +42,17 @@ app.post('/recommend', express.json(), async (req, res) => {
     const data = req.body;
     console.log('data', data);
 
-    let showsList;
+    let resObj;
     if (data.prompt) {
-        showsList = await getShowsWithPrompt(data);
-        if (showsList == null) {
+        resObj = await getShowsWithPrompt(data);
+        if (resObj == null) {
             res.sendStatus(400);
         }
     } else if (data.genres) {
-        showsList = await getShowsWithGenres(data);
+        resObj = await getShowsWithGenres(data);
     }
 
-    // console.log("showsList.length:", showsList.length);
-    
-    res.status(200).json(showsList);
+    res.status(200).json(resObj);
 });
 
 app.listen(PORT, () => {

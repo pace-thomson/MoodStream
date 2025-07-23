@@ -41,7 +41,8 @@
 
 <script setup>
 import { ref, watch } from 'vue';
-import { getShowsWithGenres, getShowsWithPrompt } from '../serverCaller.js'
+import { getShowsWithGenres, getShowsWithPrompt } from '../serverCaller.js';
+import { saveUserMood } from '@/supabase.js';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { movieQuotes } from '@/movieQuotes.js';
 import Popcorn from '@/components/Popcorn.vue';
@@ -129,9 +130,10 @@ async function getRecommendations() {
   isLoading.value = true;
 
   let showss;
-  console.log("emojisOrPrompt.value", emojisOrPrompt.value);
   if (emojisOrPrompt.value == 'prompt') {
-    showss = await getShowsWithPrompt(moodTranscript.value, props.catalogs);
+    const res = await getShowsWithPrompt(moodTranscript.value, props.catalogs);
+    showss = res.shows;
+    logNewHistory(res.mood);
   } else if (emojisOrPrompt.value == 'emojis') {
     const genres = getGenreListFromMoods();
     showss = await getShowsWithGenres(genres, props.catalogs);
@@ -162,6 +164,11 @@ function getGenreListFromMoods() {
   }
   console.log("new genreArray:", newArray);
   return newArray;
+}
+
+async function logNewHistory(mood_extracted) {
+  const didItWork = await saveUserMood(props.supabase, props.currentUserId, moodTranscript.value, mood_extracted);
+  console.log("saveUserMood returned:", didItWork);
 }
 
 </script>

@@ -54,7 +54,8 @@ export class AiResponseObj {
         this.showType = res.showType;
         this.minYear = res.minYear;
         this.maxYear = res.maxYear;    
-        this.genresRelation = res.genresRelation;    
+        this.genresRelation = res.genresRelation; 
+        this.mood_extracted = res.mood;   
     }
 }
 
