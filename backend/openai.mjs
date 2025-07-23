@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { extractPreferenceTool } from './openaischema.js';
+import { extractTitleTool } from './openseachschema.js';
 
 const systemPrompt = 
 `
@@ -19,6 +20,33 @@ Rules:
     - Use "or" for mixed or looser moods (e.g., Comedy + Thriller + Sci-Fi).
 `;
 
+const systemPromptSeach = `
+You are a helpful assistant that extracts possible movie or TV show titles from user input, even when the user cannot remember the exact name.
+
+Users may provide:
+- The exact title
+- A partial or close title
+- A general description of the plot, actors, time period, director, or theme
+
+Your task is to analyze the user's input and return a list of possible titles the user may be referring to.
+
+You must respond using the function \`extract_movie_title\`, with an array of \`potentialTitles\`. Each entry in the array should include:
+- "title": The name of the movie or show
+- "year": (Optional) The most likely release year, if known or strongly inferred
+
+The goal is to help identify titles even when the user is vague. Return all reasonable matches.
+
+Examples of valid user input:
+- “I think the movie had Robert Downey Jr., and it was an 80s film about addiction.”
+- “What was that 90s comedy with Jim Carrey where he couldn't lie?”
+- “Give me movies by Quentin Tarantino.”
+- “I loved that show with the chemistry teacher who became a drug dealer.”
+
+You may include multiple results if several titles are plausible, but if user seems to want one title, return that title in the correct format.
+Always format your response using the \`extract_movie_title\` tool only.
+`;
+
+
 export class AiResponseObj {
     constructor(res) {
         this.mood = res.mood;
@@ -29,6 +57,8 @@ export class AiResponseObj {
         this.genresRelation = res.genresRelation;    
     }
 }
+
+//how do i do a resoponse object from a search?
 
 export class OpenAiHandler {
 
@@ -60,6 +90,28 @@ export class OpenAiHandler {
         } catch (err) {
             console.error("Error:", err);
         }
+    }
+
+    getTitlesFromSearch(transcript) {
+        return this.openai.responses.create({
+            model: "gpt-4o",
+            input: [
+                { role: "developer", content: systemPromptSeach },
+                { role: "user", content: transcript }
+            ],
+            tools: extractTitleTool
+        })
+        .then(response => {
+            if (response.output[0].arguments == undefined) {
+                return null;
+            }
+            const result = JSON.parse(response.output[0].arguments);
+            console.log("Titles extracted:\n", result);
+            return result.potentialTitles; //Is this correct? should this be a new class object like the other? 
+        })
+        .catch(err => {
+            console.error("Error:", err);
+        });
     }
 }
 

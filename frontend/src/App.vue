@@ -17,6 +17,7 @@
     <div class="navbar-center">
       <button @click="currentPage = 'history'" class="nav-button">My Moods</button>
       <button @click="currentPage = 'watchlist'" class="nav-button">My Watchlist</button>
+      <button @click="currentPage = 'search'" class="nav-button">Search</button>
     </div>
     <div class="navbar-right">
       <button @click="currentPage = 'account'" class="nav-button account-button">Account</button>
@@ -79,6 +80,13 @@
       :supabase="supabase"
     />
 
+    <Search
+      v-if="currentPage == 'search'"
+      :current-user-id="currentUserId"
+      :supabase="supabase"
+      :catalogs="userCatalogs"
+    />
+
   </div>
     
 </template>
@@ -96,6 +104,7 @@ import Home from './pages/Home.vue';
 import Account from './pages/Account.vue';
 import Watchlist from './pages/Watchlist.vue';
 import History from './pages/History.vue';
+import Search from './pages/Search.vue';
 
 
 // --- State Management ---
@@ -252,7 +261,7 @@ a {
 }
 
 .nav-button:hover {
-  background-color: rgba(74, 85, 104, 0.5);
+  /* background-color: rgba(74, 85, 104, 0.5); */
   color: #ffffff;
 }
 
