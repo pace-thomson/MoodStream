@@ -11,7 +11,11 @@ export const extractTitleTool = [{
             "type": "object",
             "properties": {
               "title": { "type": "string" },
-              "year": { "type": "integer" }
+              "showType": {
+                "type": "string",
+                  "enum": ["series", "movie", "either"],
+                  "default": "either"
+              },
             },
             "required": ["title"]
           }

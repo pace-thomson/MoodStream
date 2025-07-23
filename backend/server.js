@@ -25,6 +25,11 @@ async function getShowsWithGenres(data) {
     return showList;
 }
 
+async function getShowsWithTitle(data) {
+    const aiResponse = await openAiHandler.getTitlesFromSearch(data);
+    const showList = await availabilityApiHandler.getShowsFromTitleList(aiResponse);
+    return showList;
+}
 
 app.get('/alive', (req, res) => {
     res.send("i'm alive");
@@ -64,53 +69,66 @@ async function tester() {
         
     // });
 
-    let catalogs = ['netflix', 'disney', 'peacock'];
+    // let catalogs = ['netflix', 'disney', 'peacock'];
 
-    let genres = ['action']
+    // let genres = ['action']
 
-    let fixed = availabilityApiHandler.getFixedSubscriptionList(catalogs);
+    // let fixed = availabilityApiHandler.getFixedSubscriptionList(catalogs);
 
-    console.log(fixed);
+    // console.log(fixed);
 
-    let filter = {
-        country: "us",
-        catalogs: fixed,
-        showType: "movie",
-        genres: genres,
-        genresRelation: 'and',
-        orderBy: "popularity_alltime",
-    };
+    // let filter = {
+    //     country: "us",
+    //     catalogs: fixed,
+    //     showType: "movie",
+    //     genres: genres,
+    //     genresRelation: 'and',
+    //     orderBy: "popularity_alltime",
+    // };
 
-    const idk = await availabilityApiHandler.client.showsApi.searchShowsByFilters(filter);
+    // const idk = await availabilityApiHandler.client.showsApi.searchShowsByFilters(filter);
 
-    filter = {
-        country: "us",
-        catalogs: fixed,
-        showType: "movie",
-        genres: genres,
-        genresRelation: 'or',
-        orderBy: "popularity_1year",
-    };
-    const two = await availabilityApiHandler.client.showsApi.searchShowsByFilters(filter);
+    // filter = {
+    //     country: "us",
+    //     catalogs: fixed,
+    //     showType: "movie",
+    //     genres: genres,
+    //     genresRelation: 'or',
+    //     orderBy: "popularity_1year",
+    // };
+    // const two = await availabilityApiHandler.client.showsApi.searchShowsByFilters(filter);
 
-    let both = idk['shows'].concat(two['shows']);
+    // let both = idk['shows'].concat(two['shows']);
 
-    console.log('both.length', both.length);
+    // console.log('both.length', both.length);
 
-    let titles = [];
-    both.forEach(element => {
-        let dupe = titles.includes(element.title)
-        if (dupe) {
-            console.log('duplicate detected');
-        }
-        else {
-            titles.push(element.title);
-        }
-    })
-    console.log('title', titles);
+    // let titles = [];
+    // both.forEach(element => {
+    //     let dupe = titles.includes(element.title)
+    //     if (dupe) {
+    //         console.log('duplicate detected');
+    //     }
+    //     else {
+    //         titles.push(element.title);
+    //     }
+    // })
+
+    let transcript = "I want to watch that was animated and was about a crew trying to find a lost city. I think it was a Disney movie.";
+    const titles = await openAiHandler.getTitlesFromSearch(transcript);
+    if (titles == null) {
+        console.log("No titles found");
+        return;
+    }
+    console.log('titles', titles);
+    const showsList = await availabilityApiHandler.getShowsFromTitleList(titles);
+    if (showsList == null) {
+        console.log("No shows found");
+        return;
+    }
+    console.log('showsList', showsList);
 }
 
-// tester();
+//  tester();
 
 
 

@@ -32,9 +32,9 @@ Your task is to analyze the user's input and return a list of possible titles th
 
 You must respond using the function \`extract_movie_title\`, with an array of \`potentialTitles\`. Each entry in the array should include:
 - "title": The name of the movie or show
-- "year": (Optional) The most likely release year, if known or strongly inferred
+- "showType": The type of show, either "series", "movie", or "either" if it could be both.
 
-The goal is to help identify titles even when the user is vague. Return all reasonable matches.
+The goal is to help identify titles even when the user is vague. If you are pretty sure of the title, return just the title, otherwise, return all reasonable matches.
 
 Examples of valid user input:
 - “I think the movie had Robert Downey Jr., and it was an 80s film about addiction.”

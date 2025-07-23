@@ -47,6 +47,48 @@ export class MovieNight {
         }
     }
 
+    async getShowsUsingTitle(item) {
+        try {
+            let filter = {
+                country: "us",
+                outputLanguage: 'en',
+                title: item.title,
+            };
+            let shows = await this.client.showsApi.searchShowsByTitle(filter);
+            if (shows.length === 0) {
+                console.log(`No shows found for title: ${item.title}`);
+                return [];
+            }
+            return shows;
+        }
+        catch (error) {
+            console.log("error", error);
+        }
+    }
+
+    async getShowsFromTitleList(titleList) {
+        let showsList = [];
+        for (const item of titleList) {
+            try {
+                let shows = await this.getShowsUsingTitle(item);
+                // console.log('shows from getShowsUsingTitle in getShowsFromTitleList', shows);
+                if (shows.length > 0) {
+                    showsList = showsList.concat(shows);
+                }
+            } catch (error) {
+                console.log("Error fetching shows for title:", item.title, error);
+            }
+        }
+        // console.log('showsList from getShowsFromTitleList', showsList);
+        let uniqueShows = [];
+        for (const show of showsList) {
+            if (!uniqueShows.some(s => s.id === show.id)) {
+                uniqueShows.push(show);
+            }
+        }
+        return uniqueShows;
+    }
+
     async makeTwoCalls(filter, genres_relation) {
         filter.genresRelation = genres_relation;
         console.log('filter', filter);
@@ -119,6 +161,8 @@ export class MovieNight {
         }
         return subList.concat(freeList).concat(['tubi', 'plutotv']);
     }
+
+
 
     async getGenres() {
         const idk = await this.client.genresApi.getGenres();
