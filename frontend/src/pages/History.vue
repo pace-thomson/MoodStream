@@ -15,9 +15,7 @@
           </div>
           <div class="entry-body">
             <p v-if="entry.transcript" class="entry-transcript">"{{ entry.transcript }}"</p>
-            <div v-if="entry.moods && entry.moods.length > 0" class="entry-moods">
-              <span v-for="mood in entry.moods" :key="mood" class="mood-tag">{{ mood }}</span>
-            </div>
+            <span v-if="entry.mood" class="mood-tag">{{ entry.mood }}</span>
           </div>
         </div>
       </div>
