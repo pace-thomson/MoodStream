@@ -124,6 +124,8 @@ function getImageUrl(fileName) {
 async function getRecommendations() {
   userSentBadPrompt.value = false;
   isLoading.value = true;
+  const randomIndex = Math.floor(Math.random() * movieQuotes.length);
+  currentQuote.value = movieQuotes[randomIndex];
 
   let showss;
   if (emojisOrPrompt.value == 'prompt') {
@@ -145,8 +147,7 @@ async function getRecommendations() {
     isLoading.value = false;
     return;
   }
-  const randomIndex = Math.floor(Math.random() * movieQuotes.length);
-  currentQuote.value = movieQuotes[randomIndex];
+
   isLoading.value = false;
   recommendedShows.value = showss;
   homeState.value = 'recommendations';

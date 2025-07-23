@@ -198,6 +198,12 @@ body {
   margin: 0;
   background-color: #1a202c; /* Dark background */
   color: #e2e8f0; /* Light text */
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
 }
 
 #app {

@@ -52,6 +52,7 @@ app.post('/recommend', express.json(), async (req, res) => {
         resObj = await getShowsWithPrompt(data);
         if (resObj == null) {
             res.sendStatus(400);
+            return;
         }
     } else if (data.genres) {
         resObj = await getShowsWithGenres(data);
