@@ -168,6 +168,12 @@ async function handleSubmit() {
   const selectedCatalogs = catalogs.value.filter(c => c.subscribed).map(c => c.name);
   const selectedGenres = genres.value.filter(g => g.selected).map(g => g.id);
 
+  if (selectedCatalogs.length == 0) {
+    console.log('no catalogs'); 
+    showAlert('Please select at least one Streaming Service to continue');
+    return;
+  }
+
   try {
     if (isAccountPage.value) {
       await updateUserPreferences(props.currentUserId, selectedCatalogs, selectedGenres, props.supabase);

@@ -37,8 +37,8 @@ CREATE TABLE public.user_watchlist (
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   title text NOT NULL,
   id_streaming text,
-  id_imdb text,
-  id_tmdb integer,
+  id_imdb text UNIQUE,
+  id_tmdb integer UNIQUE,
   user_id uuid NOT NULL DEFAULT gen_random_uuid(),
   CONSTRAINT user_watchlist_pkey PRIMARY KEY (id),
   CONSTRAINT user_watchlist_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)

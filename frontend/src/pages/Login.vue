@@ -1,7 +1,8 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import { SupabaseClient } from '@supabase/supabase-js';
 
+const showAlert = inject('showAlert');
 let currentPage = defineModel("current-page"); 
 let currentUserId = defineModel("current-user-id"); 
 

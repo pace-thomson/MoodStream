@@ -14,12 +14,12 @@ export async function getShowsWithPrompt(prompt, catalogs) {
             "catalogs": catalogs
         }),
     }
-
     const response = await fetch(`${serverUrl}/recommend`, options);
 
     if (response.status == 400) {
         return null;
     }
+
     return await response.json();
 }
 
@@ -39,7 +39,7 @@ export async function getShowsWithGenres(genres, catalogs) {
         return null;
     }
 
-    return await response.json();
+    return await response.json()['shows'];
 }
 
 // I need a function here to get shows by Imdb Id for the Watchlist.vue page  getShowByImdbId(imdbId)   promise.allSettled(promises) ?
