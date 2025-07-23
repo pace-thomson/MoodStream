@@ -106,8 +106,6 @@ watch(moodTranscript, (newTranscript, oldTranscript) => {
 
 
 function selectEmoji(emoji) {
-  if (props.catalogs.length == 0) emojisOrPrompt.value = 'neither';
-  else emojisOrPrompt.value = 'either';
   if (emojisOrPrompt.value == 'prompt') {
     return;
   } else if (mood.value.includes(emoji.name)) {
@@ -130,15 +128,17 @@ async function getRecommendations() {
   isLoading.value = true;
 
   let showss;
+  let res = {thing: "idk"};
   if (emojisOrPrompt.value == 'prompt') {
-    const res = await getShowsWithPrompt(moodTranscript.value, props.catalogs);
+    res = await getShowsWithPrompt(moodTranscript.value, props.catalogs);
     showss = res.shows;
     logNewHistory(res.mood);
   } else if (emojisOrPrompt.value == 'emojis') {
     const genres = getGenreListFromMoods();
     showss = await getShowsWithGenres(genres, props.catalogs);
+    console.log('showss in emojis thing', showss);
   }
-  if (showss == null) {
+  if (!showss || !res) {
     userSentBadPrompt.value = true;
     isLoading.value = false;
     return;
