@@ -9,8 +9,11 @@
       <h2>How are you feeling?</h2>
       <p>I'll recommend both movies and shows, unless you tell me what you'd prefer.</p>
       <div class="input-container">
-        <input :class="{ 'disabled-input': emojisOrPrompt == 'emojis' }" type="text" v-model="moodTranscript"
-          placeholder="I'm feeling..." />
+        <input 
+          :class="{ 'disabled-input': emojisOrPrompt == 'emojis' }" 
+          type="text" v-model="moodTranscript"
+          placeholder="I'm feeling..." @keyup.enter="getRecommendations()"
+        />
         <p v-if="userSentBadPrompt" class="bad-user-prompt">
           Could you please clarify your feelings or provide more context for what you feel like watching?
         </p>
@@ -26,7 +29,7 @@
         </span>
       </div>
       <div class="submit-button">
-        <button @click="getRecommendations">Get Recommendations</button>
+        <button @click="getRecommendations()">Get Recommendations</button>
         <button v-if="recommendedShows != null" @click="homeState = 'recommendations'">
           See Last Recommendations
         </button>

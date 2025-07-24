@@ -59,7 +59,7 @@ async function handleRegister() {
         <h1>Create Account</h1>
         <p>Join moodstream to get started</p>
       </div>
-      <form @submit.prevent="handleRegister" class="auth-form">
+      <form @submit.prevent="handleRegister()" class="auth-form">
         <div class="input-group">
           <label for="first-name">First Name</label>
           <input type="text" id="first-name" v-model="firstName" required />
@@ -74,7 +74,7 @@ async function handleRegister() {
         </div>
         <div class="input-group">
           <label for="password-register">Password</label>
-          <input type="password" id="password-register" v-model="password" required />
+          <input @keyup.enter="handleRegister()" type="password" id="password-register" v-model="password" required />
         </div>
         <button type="submit" class="submit-button">Register</button>
       </form>

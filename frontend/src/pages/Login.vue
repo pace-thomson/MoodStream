@@ -45,14 +45,14 @@ async function handleLogin() {
         <img src="../assets/images/moodstreamlogo/moodstream_logo.png" alt="Moodstream Logo" class="header-logo" />
         <p>Streaming just for you.</p>
       </div>
-      <form @submit.prevent="handleLogin" class="auth-form">
+      <form @submit.prevent="handleLogin()" class="auth-form">
         <div class="input-group">
           <label for="email">Email</label>
           <input type="email" id="email" v-model="email" required />
         </div>
         <div class="input-group">
           <label for="password">Password</label>
-          <input type="password" id="password" v-model="password" required />
+          <input @keyup.enter="handleLogin()" type="password" id="password" v-model="password" required />
         </div>
         <button type="submit" class="submit-button">Login</button>
       </form>
