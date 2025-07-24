@@ -117,7 +117,6 @@ const props = defineProps({
   },
   currentPage: {
     type: String,
-    required: true
   }
 });
 
