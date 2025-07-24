@@ -89,6 +89,19 @@ export class MovieNight {
         return uniqueShows;
     }
 
+    async getShowByImdbId(imdbId) {
+        try {
+            const show = await this.client.showsApi.getShow({
+                id: imdbId,
+                country: "us" 
+            });
+            return show;
+        } catch (error) {
+            console.error(`Error fetching show with IMDB ID ${imdbId}:`, error);
+            return null;
+        }
+    }
+
     async makeTwoCalls(filter, genres_relation) {
         filter.genresRelation = genres_relation;
         console.log('filter', filter);
