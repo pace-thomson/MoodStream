@@ -18,7 +18,7 @@
 
     <div v-else class="empty-watchlist">
       <p>Your watchlist is empty.</p>
-      <p>Click the '+' on any show to add it here!</p>
+      <p>Click the '+' on any show to add it here.</p>
     </div>
   </section>
 </template>
@@ -38,7 +38,8 @@ const watchlistShows = ref([]);
 const props = defineProps({
   supabase: { type: SupabaseClient, required: true },
   currentUserId: { type: String, required: true },
-  catalogs: { type: Array, required: true }
+  catalogs: { type: Array, required: true },
+  currentPage: { type: String, required: true }
 });
 
 // --- Lifecycle Hook ---

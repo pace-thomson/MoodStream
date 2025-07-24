@@ -58,6 +58,7 @@
       :supabase="supabase"
       :catalogs="userCatalogs"
       :genres="userGenres"
+      :current-page="currentPage"
     />
 
     <Watchlist
@@ -65,6 +66,7 @@
       :current-user-id="currentUserId"
       :supabase="supabase"
       :catalogs="userCatalogs"
+      :current-page="currentPage"
     />
 
     <History
@@ -85,6 +87,7 @@
       :current-user-id="currentUserId"
       :supabase="supabase"
       :catalogs="userCatalogs"
+      :current-page="currentPage"
     />
 
   </div>
