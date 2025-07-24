@@ -26,7 +26,8 @@ const props = defineProps({
   supabase: SupabaseClient,
   currentUserId: String,
   catalogs: Array,
-  recommendedShows: Array
+  recommendedShows: Array,
+  currentPage: String
 });
 </script>
 
