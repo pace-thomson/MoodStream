@@ -27,7 +27,7 @@
 import { ref, onMounted } from 'vue';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { getUserWatchlist } from '../supabase.js';
-import { getShowByImdbId } from '../serverCaller.js';
+import { getShowsByImdbId } from '../serverCaller.js';
 import TitleCard from '../components/TitleCard.vue';
 
 // --- Component State ---
@@ -50,7 +50,8 @@ onMounted(async () => {
     if (basicWatchlist && basicWatchlist.length > 0) {
       const imdbIds = basicWatchlist.map(item => item.id_imdb);
 
-      const detailedShows = await getShowByImdbId(imdbId);
+      const detailedShows = await getShowsByImdbId(imdbIds);
+      console.log('detailed shows', detailedShows);
       watchlistShows.value = detailedShows;
     }
   } catch (error) {

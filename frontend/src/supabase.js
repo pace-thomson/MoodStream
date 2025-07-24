@@ -40,7 +40,7 @@ export async function getUserInfo(supabaseClient, user_id) {
 export async function getUserWatchlist(supabaseClient, user_id) {
     const { data, error } = await supabaseClient
       .from('user_watchlist')
-      .select('id_imdb, title,created_at')
+      .select()
       .eq('user_id', user_id)
       .order('created_at', { ascending: false });
   

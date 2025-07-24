@@ -128,12 +128,11 @@ onMounted(async () => {
   const { data: { session } } = await supabase.value.auth.getSession();
 
   if (session) {
-    console.log('Current user:', session.user);
     currentPage.value = 'home';
     currentUserId.value = session.user.id;
 
-    await fetchUserInfo();  //should this happen? 
-   } 
+    await fetchUserInfo(); 
+  } 
 })
 
 async function fetchUserInfo() {

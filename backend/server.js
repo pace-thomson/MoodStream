@@ -61,6 +61,19 @@ app.post('/recommend', express.json(), async (req, res) => {
     res.status(200).json(resObj);
 });
 
+app.get('/watchlist', async (req, res) => {
+    const ids = req.query.idArray.split(',');
+    console.log('ids received:', ids);
+
+    const shows = await availabilityApiHandler.fetchAllShowsByImdbId(ids);
+
+    if (!shows) {
+        res.sendStatus(500)
+    }
+    console.log('shows', shows);
+    res.status(200).json(shows);
+});
+
 app.listen(PORT, () => {
     console.log(`Server listening at http://localhost:${PORT}/`);
 });

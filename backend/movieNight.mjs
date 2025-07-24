@@ -89,15 +89,23 @@ export class MovieNight {
         return uniqueShows;
     }
 
-    async getShowByImdbId(imdbId) {
+    async fetchAllShowsByImdbId(ids) {
         try {
-            const show = await this.client.showsApi.getShow({
-                id: imdbId,
-                country: "us" 
+            let promiseArray = [];
+            ids.forEach( async (id) => {
+                const options = {
+                    id: id,
+                    country: "us" 
+                };
+                promiseArray.push(this.client.showsApi.getShow(options));
             });
-            return show;
-        } catch (error) {
-            console.error(`Error fetching show with IMDB ID ${imdbId}:`, error);
+    
+            const reses = await Promise.all(promiseArray);
+            // console.log('shows responded in fetchall', reses);
+            return reses;
+        }
+        catch {
+            console.log('error in fetchAllShowsByImdbId');
             return null;
         }
     }
@@ -131,6 +139,8 @@ export class MovieNight {
         }
         return filter;
     }
+
+
 
     determineShowsLengths(shows1, shows2) {
         if ((shows1.shows.length + shows2.shows.length ) < 40) {

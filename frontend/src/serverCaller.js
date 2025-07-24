@@ -2,6 +2,7 @@ let serverUrl;
 if (window.location.hostname == "127.0.0.1" || window.location.hostname == "localhost") {
     serverUrl = "http://localhost:3000";
 } else {
+    // CHANGE THIS WHEN DEPLOYING TO ACTAULLY MATCH
     serverUrl = "https://MoodStream.onrender.com"
 }
 
@@ -43,8 +44,14 @@ export async function getShowsWithGenres(genres, catalogs) {
     return idk.shows;
 }
 
-export async function getShowByImdbId(imdbId){
-    console.log('idk');
+export async function getShowsByImdbId(idArray){
+    const params = new URLSearchParams({
+        idArray: idArray,
+    }).toString();
+
+    const response = await fetch(`${serverUrl}/watchlist?${params}`); 
+    const jsoned = await response.json();
+    return jsoned;
 }
 
 // I need a function here to get shows by Imdb Id for the Watchlist.vue page  getShowByImdbId(imdbId)   promise.allSettled(promises) ?
