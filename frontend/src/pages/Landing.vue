@@ -48,6 +48,9 @@
 .tagline {
   animation-delay: 0.2s;
 }
+a {
+  text-decoration: none;
+}
 .description {
   animation-delay: 0.4s;
 }
@@ -135,9 +138,10 @@
 .sub-text a {
   font-weight: 500;
   color: #e2e8f0;
-  text-decoration: underline;
+  
 }
 .sub-text a:hover {
   color: #735CD1;
+  text-decoration: underline;
 }
 </style>

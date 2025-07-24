@@ -40,7 +40,7 @@ export async function getUserInfo(supabaseClient, user_id) {
 export async function getUserWatchlist(supabaseClient, user_id) {
     const { data, error } = await supabaseClient
       .from('user_watchlist')
-      .select('id_imdb, title, year, poster, created_at, description, genres')
+      .select('id_imdb, title,created_at')
       .eq('user_id', user_id)
       .order('created_at', { ascending: false });
   
@@ -164,6 +164,19 @@ export async function saveUserMood(supabaseClient, userId, transcript, mood_extr
     }
 
     return { data, error };
+}
+
+export async function removeShowFromWatchlist(supabase, userId, imdbId) {
+  const { error } = await supabase
+    .from('user_watchlist')
+    .delete()
+    .match({ user_id: userId, id_imdb: imdbId });
+
+  if (error) {
+    console.error('Error removing from watchlist:', error);
+  }
+
+  return { error };
 }
   
 

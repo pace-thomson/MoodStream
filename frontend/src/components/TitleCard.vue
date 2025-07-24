@@ -14,7 +14,8 @@
           >
         </div>
         
-        <button class="add-watchlist-button" @click="addToWatchlist(show)">+</button>
+        <button v-if="currentPage === 'watchlist'" class="add-watchlist-button remove-button" @click="handleRemoveFromWatchlist(show)">-</button>
+        <button v-else class="add-watchlist-button" @click="handleAddToWatchlist(show)">+</button>
 
         <div class="card-body" @click="openModal(show)">
           <div class="card-info-flex">
@@ -42,11 +43,8 @@
             class="modal-poster"
           >
           <div class="modal-header-info">
-            <!-- 
-              This is the new button. It reuses the existing style and calls the same function.
-              It's placed inside the header info section for correct positioning.
-            -->
-            <button class="add-watchlist-button modal-add-button" @click="addToWatchlist(selectedShow)">+</button>
+            <button v-if="currentPage === 'watchlist'" class="add-watchlist-button remove-button modal-add-button" @click="handleRemoveFromWatchlist(selectedShow)">-</button>
+            <button v-else class="add-watchlist-button modal-add-button" @click="handleAddToWatchlist(selectedShow)">+</button>
             
             <h1>{{ selectedShow.title }}</h1>
             
@@ -97,7 +95,7 @@
 
 <script setup>
 import { ref, onMounted, computed, inject } from 'vue';
-import { addShowToWatchlist } from '../supabase.js';
+import { addShowToWatchlist, removeShowFromWatchlist } from '../supabase.js';
 
 // --- Props ---
 const props = defineProps({
@@ -116,8 +114,15 @@ const props = defineProps({
   currentUserId: {
     type: String,
     required: true
+  },
+  currentPage: {
+    type: String,
+    required: true
   }
 });
+
+// --- Emits ---
+const emit = defineEmits(['show-removed']);
 
 // --- State Management ---
 const selectedShow = ref(null);
@@ -128,40 +133,26 @@ onMounted(() => {
   updateCatalogSubscriptions();
 });
 
-// --- MODIFIED: Computed property now de-duplicates and prioritizes English language streams ---
 const filteredStreamingOptions = computed(() => {
   if (!selectedShow.value || !selectedShow.value.streamingOptions.us) {
     return [];
   }
-
-  // Step 1: Preliminary filter for allowed types ('subscription', 'free')
   const allowedTypes = ['subscription', 'free'];
   const preliminaryList = selectedShow.value.streamingOptions.us.filter(option => 
     allowedTypes.includes(option.type)
   );
-
-  // Step 2: De-duplicate the list, prioritizing English audio
   const uniqueOptions = preliminaryList.reduce((acc, currentOption) => {
     const serviceId = currentOption.service.id;
     const existingOption = acc.get(serviceId);
-
-    // Helper to check if an option has English audio
     const hasEnglishAudio = (opt) => opt.audios?.some(audio => audio.language === 'eng');
-
-    // If we haven't stored an option for this service yet, add this one.
     if (!existingOption) {
       acc.set(serviceId, currentOption);
     } 
-    // If an option already exists, and this new one has English audio but the old one didn't,
-    // replace the old one with this better (English) version.
     else if (hasEnglishAudio(currentOption) && !hasEnglishAudio(existingOption)) {
       acc.set(serviceId, currentOption);
     }
-
     return acc;
   }, new Map());
-
-  // Convert the Map values back to an array to be rendered
   return Array.from(uniqueOptions.values());
 });
 
@@ -169,9 +160,7 @@ const filteredStreamingOptions = computed(() => {
 // --- Logic ---
 function updateCatalogSubscriptions() {
   if (!props.catalogs) return;
-  
   full_catalog.value.forEach(catalog => catalog.subscribed = false);
-
   props.catalogs.forEach(userCatalogId => {
     const catalog = full_catalog.value.find(c => c.name === userCatalogId);
     if (catalog) {
@@ -190,26 +179,39 @@ function closeModal() {
 }
 
 // --- Card Interaction Functions ---
-async function addToWatchlist(show) {
+async function handleAddToWatchlist(show) {
   const { error } = await addShowToWatchlist(props.supabase, props.currentUserId, show);
 
   if (error) {
     if (error.message !== 'already_exists') {
       showAlert(`Could not add ${show.title} to watchlist.`);
     } else {
-      showAlert(`${show.title} is already in your watchlist!`);
+      showAlert(`${show.title} is already in your watchlist.`);
     }
   } else {
-    showAlert(`${show.title} was added to your watchlist!`);
+    showAlert(`${show.title} was added to your watchlist.`);
   }
 }
+
+async function handleRemoveFromWatchlist(show) {
+  const { error } = await removeShowFromWatchlist(props.supabase, props.currentUserId, show.imdbId);
+  if (error) {
+    showAlert(`Could not remove ${show.title} from watchlist.`, 'error');
+  } else {
+    showAlert(`${show.title} was removed from your watchlist.`, 'success');
+    emit('show-removed', show.imdbId);
+    if (selectedShow.value && selectedShow.value.imdbId === show.imdbId) {
+      closeModal();
+    }
+  }
+}
+
 
 // --- Helper Functions ---
 function getPlayableLink(show) {
   if (!show.streamingOptions.us) {
     return null;
   }
-  
   const playableOption = show.streamingOptions.us.find(option => {
     if (option.type === 'free') {
       return true;
@@ -220,7 +222,6 @@ function getPlayableLink(show) {
     }
     return false;
   });
-  
   return playableOption ? playableOption.link : null;
 }
 
@@ -315,6 +316,15 @@ const full_catalog = ref([
 .add-watchlist-button:hover {
   background-color: #735CD1;
   transform: scale(1.1);
+}
+remove-button:hover {
+  background-color: #c0392b; /* Red for remove */
+  border-color: #c0392b;
+}
+
+.modal-add-button {
+  top: 1.5rem;
+  right: 2rem;
 }
 .card-body {
   padding: 1rem;
