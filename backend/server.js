@@ -35,6 +35,13 @@ async function getShowsWithGenres(data) {
     return resObj;
 }
 
+async function getShowsWithTitle(data) {
+    const aiResponse = await openAiHandler.getTitlesFromSearch(data);
+    const showList = await availabilityApiHandler.getShowsFromTitleList(aiResponse);
+    return showList;
+}
+
+
 app.get('/alive', (req, res) => {
     res.send("i'm alive");
 });
