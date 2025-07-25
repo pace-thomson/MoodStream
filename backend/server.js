@@ -4,7 +4,10 @@ import express from 'express';
 import cors from 'cors';
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:5173", "http://localhost:5174", "https://moodstream.onrender.com"]
+}));
+
 const PORT = 3000;
 
 const openAiHandler = new OpenAiHandler(process.env.OPEN_AI_API_KEY);
@@ -30,12 +33,6 @@ async function getShowsWithGenres(data) {
         shows: showList
     }
     return resObj;
-}
-
-async function getShowsWithTitle(data) {
-    const aiResponse = await openAiHandler.getTitlesFromSearch(data);
-    const showList = await availabilityApiHandler.getShowsFromTitleList(aiResponse);
-    return showList;
 }
 
 app.get('/alive', (req, res) => {
