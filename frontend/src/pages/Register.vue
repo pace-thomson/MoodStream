@@ -41,9 +41,9 @@ async function handleRegister() {
 
     if (profileError) throw profileError;
 
-    showAlert('Registration successful! Please check your email for verification.');
     console.log('Registered user:', authData.user);
     currentUserId.value = authData.user.id;
+    currentPage.value = 'home';
 
   } catch (error) {
     showAlert(error.message);
