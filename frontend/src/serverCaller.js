@@ -3,7 +3,7 @@ if (window.location.hostname == "127.0.0.1" || window.location.hostname == "loca
     serverUrl = "http://localhost:3000";
 } else {
     // CHANGE THIS WHEN DEPLOYING TO ACTAULLY MATCH
-    serverUrl = "https://MoodStream.onrender.com"
+    serverUrl = "https://moodstream-server.onrender.com"
 }
 
 export async function getShowsWithPrompt(prompt, catalogs) {

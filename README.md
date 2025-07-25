@@ -1,4 +1,11 @@
-# READ ME boi
+# MoodStream
+
+
+## Deployment
+
+> Frontend url: https://moodstream.onrender.com
+ 
+> Backend url: https://moodstream-server.onrender.com
 
 run backend with `node --env-file=.env server.js`
 
