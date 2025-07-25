@@ -14,6 +14,8 @@
       :catalogs="props.catalogs"
       :supabase="props.supabase"
       :current-user-id="props.currentUserId"
+      :currentPage="props.currentPage"
+      @show-removed="handleShowRemoved"
     />
 
     <div v-else class="empty-watchlist">
@@ -60,6 +62,9 @@ onMounted(async () => {
     isLoading.value = false;
   }
 });
+function handleShowRemoved(removedImdbId) {
+  watchlistShows.value = watchlistShows.value.filter(show => show.imdbId !== removedImdbId);
+}
 </script>
   
 <style scoped>

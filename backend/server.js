@@ -74,6 +74,29 @@ app.get('/watchlist', async (req, res) => {
     res.status(200).json(shows);
 });
 
+app.post('/search', express.json(), async (req, res) => {
+    const data = req.body;
+
+    if (!data || !data.prompt) {
+        return res.status(400).json({ message: 'A search prompt is required.' });
+    }
+
+    try {
+        const showsList = await getShowsWithTitle(data.prompt);
+        
+        if (showsList === null) {
+            return res.status(500).json({ message: 'Error processing your search.' });
+        }
+
+        res.status(200).json(showsList);
+
+    } catch (error) {
+        console.error('Error in /search endpoint:', error);
+        res.status(500).json({ message: 'An internal server error occurred.' });
+    }
+});
+
+
 app.listen(PORT, () => {
     console.log(`Server listening at http://localhost:${PORT}/`);
 });

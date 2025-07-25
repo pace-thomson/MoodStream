@@ -54,4 +54,21 @@ export async function getShowsByImdbId(idArray){
     return jsoned;
 }
 
+export async function getShowsFromSearch(prompt) {
+    const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: prompt }),
+    };
+
+    const response = await fetch(`${serverUrl}/search`, options);
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Server responded with status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 // I need a function here to get shows by Imdb Id for the Watchlist.vue page  getShowByImdbId(imdbId)   promise.allSettled(promises) ?

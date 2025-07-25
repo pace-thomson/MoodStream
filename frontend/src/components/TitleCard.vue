@@ -212,12 +212,12 @@ function getPlayableLink(show) {
     return null;
   }
   const playableOption = show.streamingOptions.us.find(option => {
-    if (option.type === 'free') {
-      return true;
-    }
     if (option.type === 'subscription') {
       const serviceInfo = full_catalog.value.find(s => s.name === option.service.id);
       return serviceInfo && serviceInfo.subscribed;
+    }
+    if (option.type === 'free') {
+      return true;
     }
     return false;
   });
@@ -316,7 +316,25 @@ const full_catalog = ref([
   background-color: #735CD1;
   transform: scale(1.1);
 }
-remove-button:hover {
+
+.remove-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background-color: rgba(45, 55, 72, 0.8);
+  color: #e2e8f0;
+  border: 1px solid #718096;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.5rem;
+  line-height: 0px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: background-color 0.2s, transform 0.2s;
+}
+.remove-button:hover {
   background-color: #c0392b; /* Red for remove */
   border-color: #c0392b;
 }

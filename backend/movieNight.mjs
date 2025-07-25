@@ -54,32 +54,44 @@ export class MovieNight {
                 outputLanguage: 'en',
                 title: item.title,
             };
-            let shows = await this.client.showsApi.searchShowsByTitle(filter);
-            if (shows.length === 0) {
-                console.log(`No shows found for title: ${item.title}`);
-                return [];
+
+            if (item.showType && item.showType !== 'either') {
+                filter.showType = item.showType;
             }
-            return shows;
+
+            let shows = await this.client.showsApi.searchShowsByTitle(filter);
+
+            if (shows.length > 1) {
+                const exactMatch = shows.find(show => show.title.toLowerCase() === item.title.toLowerCase());
+                if (exactMatch) {
+                    return [exactMatch];
+                }
+            }
+
+            return shows; 
         }
         catch (error) {
-            console.log("error", error);
+            console.log("error getting shows by title:", error);
+            return []; 
         }
     }
 
     async getShowsFromTitleList(titleList) {
         let showsList = [];
-        for (const item of titleList) {
-            try {
-                let shows = await this.getShowsUsingTitle(item);
-                // console.log('shows from getShowsUsingTitle in getShowsFromTitleList', shows);
-                if (shows.length > 0) {
-                    showsList = showsList.concat(shows);
+        if (titleList.length > 1) {
+            for (const item of titleList) {
+                try {
+                    let shows = await this.getShowsUsingTitle(item);
+                    if (shows.length > 0) {
+                        showsList = showsList.concat(shows);
+                    }
+                } catch (error) {
+                    console.log("Error fetching shows for title:", item.title, error);
                 }
-            } catch (error) {
-                console.log("Error fetching shows for title:", item.title, error);
             }
+        } else if (titleList.length === 1) {
+            showsList = await this.getShowsUsingTitle(titleList[0]);
         }
-        // console.log('showsList from getShowsFromTitleList', showsList);
         let uniqueShows = [];
         for (const show of showsList) {
             if (!uniqueShows.some(s => s.id === show.id)) {
@@ -88,6 +100,48 @@ export class MovieNight {
         }
         return uniqueShows;
     }
+
+    // async getShowsUsingTitle(item) {
+    //     try {
+    //         let filter = {
+    //             country: "us",
+    //             outputLanguage: 'en',
+    //             title: item.title,
+    //         };
+    //         let shows = await this.client.showsApi.searchShowsByTitle(filter);
+    //         if (shows.length === 0) {
+    //             console.log(`No shows found for title: ${item.title}`);
+    //             return [];
+    //         }
+    //         return shows;
+    //     }
+    //     catch (error) {
+    //         console.log("error", error);
+    //     }
+    // }
+
+    // async getShowsFromTitleList(titleList) {
+    //     let showsList = [];
+    //     for (const item of titleList) {
+    //         try {
+    //             let shows = await this.getShowsUsingTitle(item);
+    //             // console.log('shows from getShowsUsingTitle in getShowsFromTitleList', shows);
+    //             if (shows.length > 0) {
+    //                 showsList = showsList.concat(shows);
+    //             }
+    //         } catch (error) {
+    //             console.log("Error fetching shows for title:", item.title, error);
+    //         }
+    //     }
+    //     // console.log('showsList from getShowsFromTitleList', showsList);
+    //     let uniqueShows = [];
+    //     for (const show of showsList) {
+    //         if (!uniqueShows.some(s => s.id === show.id)) {
+    //             uniqueShows.push(show);
+    //         }
+    //     }
+    //     return uniqueShows;
+    // }
 
     async fetchAllShowsByImdbId(ids) {
         try {
