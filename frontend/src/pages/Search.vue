@@ -10,20 +10,21 @@
             <!-- Input wrapper for positioning the clear button -->
             <div class="input-wrapper">
                 <textarea
+                    @keyup.enter="handleSearch()"
                     v-model="prompt"
                     class="search-input"
                     placeholder="e.g., 'The Dark Knight' or 'the one with the spinning top that makes you question reality'"
                 ></textarea>
                 <!-- Clear button ('x') inside the input -->
-                <button v-if="prompt" @click="clearPrompt" class="clear-button">&times;</button>
+                <button v-if="prompt" @click="clearPrompt()" class="clear-button" tabindex="-1">&times;</button>
             </div>
             
             <!-- This button now conditionally changes its text and action -->
-            <button v-if="!searched" @click="handleSearch" class="search-button" :disabled="isLoading || !prompt.trim()">
+            <button v-if="!searched" @click="handleSearch()" class="search-button" :disabled="isLoading || !prompt.trim()">
                 <span v-if="!isLoading">Search</span>
                 <span v-else>Searching...</span>
             </button>
-            <button v-else @click="resetSearch" class="search-button">
+            <button v-else @click="resetSearch()" class="search-button">
                 Start New Search
             </button>
         </div>
