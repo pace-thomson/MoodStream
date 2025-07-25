@@ -26,7 +26,7 @@
               <p class="card-genres">{{ formatGenres(show.genres) }}</p>
             </div>
             <a v-if="getPlayableLink(show)" :href="getPlayableLink(show)" @click.stop target="_blank" class="play-button">
-              <div class="play-button-icon">&#9658;</div>
+              <div class="play-button-icon">&#9654;</div>
             </a>
           </div>
         </div>
@@ -399,7 +399,7 @@ const full_catalog = ref([
 }
 .play-button-icon {
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   line-height: 1;
   margin-left: 4px;
 }
